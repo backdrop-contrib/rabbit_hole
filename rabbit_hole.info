@@ -1,0 +1,4 @@
+name = "Rabbit Hole"
+description = "Will redirect the user to a different place when viewing a full node."
+core = 7.x
+package = Odd Hill
