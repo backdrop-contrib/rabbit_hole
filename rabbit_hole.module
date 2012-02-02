@@ -228,3 +228,13 @@ function rabbit_hole_node_view_access($node) {
   // Fallback to the default access callback.
   return node_access('view', $node);
 }
+
+/**
+ * Implements hook_node_type_delete().
+ */
+function rabbit_hole_node_type_delete($info) {
+  // Delete variables connected to this content type.
+  variable_del('rabbit_hole_action_' . $info->type);
+  variable_del('rabbit_hole_redirect_' . $info->type);
+  variable_del('rabbit_hole_redirect_response_' . $info->type);
+}
