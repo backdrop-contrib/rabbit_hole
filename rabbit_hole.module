@@ -50,6 +50,7 @@ function rabbit_hole_form_node_type_form_alter(&$form, $form_state) {
       '#collapsed' => TRUE,
       '#collapsible' => TRUE,
       '#group' => 'additional_settings',
+      '#attributes' => array('class' => array('rabbit-hole-settings-form')),
       '#attached' => array(
         'js' => array(
           drupal_get_path('module', 'rabbit_hole') . '/rabbit-hole.js',
@@ -118,6 +119,7 @@ function rabbit_hole_form_node_form_alter(&$form, $form_state) {
     '#collapsed' => TRUE,
     '#collapsible' => TRUE,
     '#group' => 'additional_settings',
+    '#attributes' => array('class' => array('rabbit-hole-settings-form')),
     '#attached' => array(
       'js' => array(
         drupal_get_path('module', 'rabbit_hole') . '/rabbit-hole.js',
