@@ -82,11 +82,18 @@ function rabbit_hole_form_node_type_form_alter(&$form, $form_state) {
       '#description' => t('The relative path to were the user should be redirected. Leave this empty, or use %front to redirect to the front page.', array('%front' => '<front>')),
     );
     $form['rabbit_hole']['redirect']['rabbit_hole_redirect_response'] = array(
-      '#type' => 'textfield',
+      '#type' => 'select',
       '#title' => t('Response code'),
-      '#size' => 40,
+      '#options' => array(
+        301 => t('301 (Moved Permanently)'),
+        302 => t('302 (Found)'),
+        303 => t('303 (See other)'),
+        304 => t('304 (Not modified)'),
+        305 => t('305 (Use proxy)'),
+        307 => t('307 (Temporary redirect)'),
+      ),
       '#default_value' => variable_get('rabbit_hole_redirect_response_' . $form['#node_type']->type, RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT),
-      '#description' => t('The response code that should be sent to the users browser, e.g. 301. Follow !link for more information on response codes.', array('!link' => l(t('this link'), 'http://api.drupal.org/api/drupal/includes--common.inc/function/drupal_goto/7'))),
+      '#description' => t('The response code that should be sent to the users browser. Follow !link for more information on response codes.', array('!link' => l(t('this link'), 'http://api.drupal.org/api/drupal/includes--common.inc/function/drupal_goto/7'))),
     );
   }
 }
@@ -144,9 +151,16 @@ function rabbit_hole_form_node_form_alter(&$form, $form_state) {
     '#description' => t('The relative path to were the user should be redirected. Leave this empty, or use %front to redirect to the front page.', array('%front' => '<front>')),
   );
   $form['rabbit_hole']['redirect']['rabbit_hole_redirect_response'] = array(
-    '#type' => 'textfield',
+    '#type' => 'select',
     '#title' => t('Response code'),
-    '#size' => 40,
+    '#options' => array(
+      301 => t('301 (Moved Permanently)'),
+      302 => t('302 (Found)'),
+      303 => t('303 (See other)'),
+      304 => t('304 (Not modified)'),
+      305 => t('305 (Use proxy)'),
+      307 => t('307 (Temporary redirect)'),
+    ),
     '#default_value' => isset($node->rabbit_hole_redirect_response) ? $node->rabbit_hole_redirect_response : variable_get('rabbit_hole_redirect_response_' . $node->type, RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT),
     '#description' => t('The response code that should be sent to the users browser, e.g. 301. Follow !link for more information on response codes.', array('!link' => l(t('this link'), 'http://api.drupal.org/api/drupal/includes--common.inc/function/drupal_goto/7'))),
   );
