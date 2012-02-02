@@ -8,6 +8,7 @@
  * configurable per content type or node.
  */
 
+define('RABBIT_HOLE_USE_DEFAULT', -1);
 define('RABBIT_HOLE_DISPLAY_CONTENT', 0);
 define('RABBIT_HOLE_ACCESS_DENIED', 1);
 define('RABBIT_HOLE_PAGE_NOT_FOUND', 2);
@@ -121,12 +122,13 @@ function rabbit_hole_form_node_form_alter(&$form, $form_state) {
     '#type' => 'radios',
     '#title' => t('Behavior'),
     '#options' => array(
+      RABBIT_HOLE_USE_DEFAULT => t('Content type default'),
       RABBIT_HOLE_DISPLAY_CONTENT => t('Display the content (regular behavior)'),
       RABBIT_HOLE_ACCESS_DENIED => t('Access denied'),
       RABBIT_HOLE_PAGE_NOT_FOUND => t('Page not found'),
       RABBIT_HOLE_PAGE_REDIRECT => t('Page redirect'),
     ),
-    '#default_value' => isset($node->rabbit_hole_action) ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type, RABBIT_HOLE_DISPLAY_CONTENT),
+    '#default_value' => isset($node->rabbit_hole_action) ? $node->rabbit_hole_action : RABBIT_HOLE_USE_DEFAULT,
     '#description' => t('What should happen when someone tries to visit the node page?'),
   );
   $form['rabbit_hole']['redirect'] = array(
@@ -159,10 +161,10 @@ function rabbit_hole_node_view($node, $view_mode, $langcode) {
     // bypass Rabbit Hole, exit early.
     return;
   }
-  
+
   // Get the action. Use the one specified for this node, or fallback to the
   // default value for the content type.
-  $action = isset($node->rabbit_hole_action) ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type);
+  $action = isset($node->rabbit_hole_action) ? ($node->rabbit_hole_action != RABBIT_HOLE_USE_DEFAULT ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type)) : variable_get('rabbit_hole_action_' . $node->type);
 
   // Get the redirect path and response in the same manner.
   $redirect_path = isset($node->rabbit_hole_redirect) ? $node->rabbit_hole_redirect : variable_get('rabbit_hole_redirect_' . $node->type, '<front>');
@@ -201,7 +203,7 @@ function rabbit_hole_menu_alter(&$items) {
  * Access callback for node/%node/view.
  */
 function rabbit_hole_node_view_access($node) {
-  $action = isset($node->rabbit_hole_action) ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type);
+  $action = isset($node->rabbit_hole_action) ? ($node->rabbit_hole_action != RABBIT_HOLE_USE_DEFAULT ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type)) : variable_get('rabbit_hole_action_' . $node->type);
   if ($action != RABBIT_HOLE_DISPLAY_CONTENT && !user_access('bypass rabbit hole')) {
     // Rabbit Hole is active for this node, disable this url.
     return FALSE;
