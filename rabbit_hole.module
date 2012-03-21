@@ -224,9 +224,19 @@ function rabbit_hole_node_view($node, $view_mode, $langcode) {
   // default value for the content type.
   $action = isset($node->rabbit_hole_action) ? ($node->rabbit_hole_action != RABBIT_HOLE_USE_DEFAULT ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type)) : variable_get('rabbit_hole_action_' . $node->type);
 
-  // Get the redirect path and response in the same manner.
-  $redirect_path = isset($node->rabbit_hole_redirect) ? token_replace($node->rabbit_hole_redirect, array('node' => $node)) : token_replace(variable_get('rabbit_hole_redirect_' . $node->type, '<front>'), array('node' => $node));
-  $redirect_response = isset($node->rabbit_hole_redirect_response) ? $node->rabbit_hole_redirect_response : variable_get('rabbit_hole_redirect_response_' . $node->type, RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT);
+  // If we should perform a redirect, we will also get the path and response.
+  if ($action == RABBIT_HOLE_PAGE_REDIRECT) {
+    if (isset($node->rabbit_hole_action) && $node->rabbit_hole_action != RABBIT_HOLE_USE_DEFAULT) {
+      // Get the redirect path and response from the node.
+      $redirect_path = token_replace($node->rabbit_hole_redirect, array('node' => $node));
+      $redirect_response = $node->rabbit_hole_redirect_response;
+    }
+    else {
+      // Get the redirect path and response from the content type.
+      $redirect_path = token_replace(variable_get('rabbit_hole_redirect_' . $node->type, '<front>'), array('node' => $node));
+      $redirect_response = variable_get('rabbit_hole_redirect_response_' . $node->type, RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT);
+    }
+  }
 
   // Now, let's see what we should do.
   switch ($action) {
