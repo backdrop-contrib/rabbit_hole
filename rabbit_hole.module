@@ -283,7 +283,7 @@ function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
     if ($element['#link']['path'] == 'node/%/view') {
       // Found the View tab, get the Rabbit Hole action for this node, and
       // remove the tab if any Rabbit Hole action has been set.
-      $node = menu_get_object();
+      $node = menu_get_object('node', 1, $router_item['tab_root_href']);
       $action = isset($node->rabbit_hole_action) ? ($node->rabbit_hole_action != RABBIT_HOLE_USE_DEFAULT ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type)) : variable_get('rabbit_hole_action_' . $node->type);
         if ($action != RABBIT_HOLE_DISPLAY_CONTENT && !user_access('bypass rabbit hole')) {
         unset($primary['output'][$delta]);
