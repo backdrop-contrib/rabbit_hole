@@ -295,3 +295,35 @@ function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   $primary['output'] = array_values($primary['output']);
   $primary['count'] = count($primary['output']);
 }
+
+/**
+ * Implements template_preprocess_search_results().
+ *
+ * TODO: Alter the search results in another way. If there is another way.
+ */
+function rabbit_hole_preprocess_search_results(&$variables) {
+  $results = &$variables['results'];
+  
+  // Iterate through the search results, and remove the nodes where Rabbit Hole
+  // is activated.
+  foreach ($results as $delta => $item) {
+    if (isset($item['node'])) {
+      $node = $item['node'];
+      $action = isset($node->rabbit_hole_action) ? ($node->rabbit_hole_action != RABBIT_HOLE_USE_DEFAULT ? $node->rabbit_hole_action : variable_get('rabbit_hole_action_' . $node->type)) : variable_get('rabbit_hole_action_' . $node->type);
+      if ($action != RABBIT_HOLE_DISPLAY_CONTENT) {
+        // This node shouldn't be displayed, remove it from the resuts.
+        unset($results[$delta]);
+      }
+    }
+  }
+  
+  // Reset the keys for the results.
+  $results = array_values($results);
+  
+  // Pass the variables through template_preprocess_search_results() once again.
+  // This is done because the Search module needs to process the new results
+  // array. This is not the ideal solution, since this could interfere with
+  // other modules also implementing template_preprocess_search_results().
+  $variables['theme_hook_suggestions'] = array();
+  template_preprocess_search_results($variables);
+}
