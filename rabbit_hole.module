@@ -202,10 +202,10 @@ function rabbit_hole_node_form_submit($form, &$form_state) {
   $action = $form_state['values']['rabbit_hole_action'] != RABBIT_HOLE_USE_DEFAULT ? $form_state['values']['rabbit_hole_action'] : variable_get('rabbit_hole_action_' . $form_state['values']['type']);
 
   // If the action says anything else than to display the content, make sure
-  // the user lands on the edit page. For some reason, setting the redirect to
-  // FALSE doesn't work. The user won't be able to edit the node straight away
-  // after the page has reloaded. But redirecting to /edit will work.
-  if ($action != RABBIT_HOLE_DISPLAY_CONTENT) {
+  // that the user doesn't land on the node view page. We'll check if a custom
+  // redirect path has been set, otherwise, we'll redirect the user to the edit
+  // page again.
+  if ($action != RABBIT_HOLE_DISPLAY_CONTENT && $form_state['redirect'] == 'node/' . $form_state['values']['nid']) {
     $form_state['redirect'] = 'node/' . $form_state['values']['nid'] . '/edit';
   }
 }
