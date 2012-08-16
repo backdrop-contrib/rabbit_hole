@@ -130,9 +130,10 @@ function rabbit_hole_form($entity_type, $bundle, $entity = NULL) {
   );
   // Display a list of tokens if the Token module is enabled.
   if (module_exists('token')) {
+    $entity_info = entity_get_info($entity_type);
     $form['rabbit_hole']['redirect']['token_info'] = array(
       '#theme' => 'token_tree',
-      '#token_types' => array($entity_type),
+      '#token_types' => array($entity_info['token type']),
     );
   }
 
@@ -191,7 +192,8 @@ function rabbit_hole_execute($entity_type, $entity) {
     }
     
     // Replace any tokens with real values.
-    $redirect_path = token_replace($redirect_path, array($entity_type => $entity));
+    $entity_info = entity_get_info($entity_type);
+    $redirect_path = token_replace($redirect_path, array($entity_info['token type'] => $entity));
   }
 
   // Now, let's see what we should do.
