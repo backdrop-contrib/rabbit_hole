@@ -189,6 +189,9 @@ function rabbit_hole_execute($entity_type, $entity) {
       $redirect_path = rabbit_hole_get_redirect_bundle($entity_type, $bundle);
       $redirect_response = rabbit_hole_get_redirect_response_bundle($entity_type, $bundle);
     }
+    
+    // Replace any tokens with real values.
+    $redirect_path = token_replace($redirect_path, array($entity_type => $entity));
   }
 
   // Now, let's see what we should do.
