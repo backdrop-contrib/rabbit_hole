@@ -238,7 +238,7 @@ function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
         $entity = menu_get_object($info['entity type'], $entity_position, $router_item['tab_root_href']);
         if (isset($entity)) {
           $bundle = rabbit_hole_entity_get_bundle($info['entity type'], $entity);
-          if (rabbit_hole_get_action($info['entity type'], $entity) != RABBIT_HOLE_DISPLAY_CONTENT && !user_access('bypass rabbit hole')) {
+          if (rabbit_hole_get_action($info['entity type'], $entity) != RABBIT_HOLE_DISPLAY_CONTENT && !user_access('bypass ' . $module)) {
             unset($primary['output'][$delta]);
           }
         }

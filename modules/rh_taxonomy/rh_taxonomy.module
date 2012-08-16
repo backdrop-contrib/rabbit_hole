@@ -26,7 +26,7 @@ function rh_taxonomy_rabbit_hole() {
  * be used as default for every term of this vocabulary.
  */
 function rh_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
-  if (!user_access('administer rabbit hole')) {
+  if (!user_access('administer rh_taxonomy')) {
     // The user doesn't have access.
     return;
   }
@@ -68,7 +68,7 @@ function rh_taxonomy_form_vocabulary_submit($form, $form_state) {
  * be able to override the default Rabbit Hole options.
  */
 function rh_taxonomy_form_taxonomy_form_term_alter(&$form, $form_state) {
-  if (!user_access('administer rabbit hole')) {
+  if (!user_access('administer rh_taxonomy')) {
     // The user doesn't have access.
     return;
   }
@@ -99,7 +99,7 @@ function rh_taxonomy_menu_alter(&$items) {
  * set, the default page callback will get executed.
  */
 function rh_taxonomy_term_page($term, $callback) {
-  if (user_access('bypass rabbit hole')) {
+  if (user_access('bypass rh_taxonomy')) {
     // The node is not being viewed at it's own page, or the user is able to
     // bypass Rabbit Hole, exit early.
     return $callback($term);
