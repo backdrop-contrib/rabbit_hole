@@ -28,7 +28,7 @@ function rabbit_hole_permission() {
   foreach ($modules as $module => $info) {
     // Get information about the entity.
     $entity_info = entity_get_info($info['entity type']);
-    $entity_label = strtolower($entity_info['plural label']);
+    $entity_label = strtolower(isset($entity_info['plural label']) ? $entity_info['plural label'] : $entity_info['label']);
     
     // Add an administer permission.
     $permissions['administer ' . $module] = array(
