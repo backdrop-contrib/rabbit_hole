@@ -11,7 +11,7 @@ Drupal.behaviors.rhNode = {
       var summary = $('label[for=' + $rabbitHoleAction.attr('id') + ']').text();
       
       // If redirect is selected, add the url to the summary.
-      if ($rabbitHoleAction.val() == settings.rabbitHole.redirectValue) {
+      if ($rabbitHoleAction.val() == Drupal.settings.rabbitHole.redirectValue) {
         summary += ' (' + $('.rabbit-hole-redirect-setting').val() + ')';
       }
       
