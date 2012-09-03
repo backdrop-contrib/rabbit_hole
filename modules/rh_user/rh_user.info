@@ -1,0 +1,4 @@
+name = Rabbit Hole users
+description = Adds Rabbit Hole functionality for users.
+core = 7.x
+dependencies[] = rabbit_hole
