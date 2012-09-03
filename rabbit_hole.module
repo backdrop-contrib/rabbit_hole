@@ -389,7 +389,15 @@ function rabbit_hole_delete_variables($entity_type, $bundle) {
  */
 function rabbit_hole_entity_get_bundle($entity_type, $entity) {
   $entity_info = entity_get_info($entity_type);
-  return $entity->{$entity_info['entity keys']['bundle']};
+  
+  // Use the bundle key to get the bundle for this entity if the bundle key has
+  // been defined. If it hasn't, it means that this entity only provides one
+  // bundle, and that bundle will always have the same name as the entoty type.
+  // E.g, the user entity is built by one bundle, and that bundle is also called
+  // user.
+  //
+  // @see hook_entity_info().
+  return !empty($entity_info['entity keys']['bundle']) ? $entity->{$entity_info['entity keys']['bundle']} : $entity_type;
 }
 
 /**
