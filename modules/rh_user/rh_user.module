@@ -90,7 +90,7 @@ function rh_user_user_view($account, $view_mode, $langcode) {
 
   // Execute Rabbit Hole, if the user is being viewed at its own page, and the
   // current user isn't able to override Rabbit Hole.
-  if ($view_mode == 'full' && $user_is_page && !user_access('bypass rh_user')) {
+  if ($user_is_page && !user_access('bypass rh_user')) {
     rabbit_hole_execute('user', $account);
   }
 }
