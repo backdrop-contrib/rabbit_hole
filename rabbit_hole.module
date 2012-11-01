@@ -134,6 +134,7 @@ function rabbit_hole_form($entity_type, $bundle, $entity = NULL) {
     $form['rabbit_hole']['redirect']['token_info'] = array(
       '#theme' => 'token_tree',
       '#token_types' => array($entity_info['token type']),
+      '#dialog' => TRUE,
     );
   }
 
