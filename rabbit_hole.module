@@ -438,8 +438,7 @@ function rabbit_hole_schema_alter(&$schema) {
   // fields to the base table of that entity.
   $modules = module_invoke_all('rabbit_hole');
   foreach ($modules as $module => $info) {
-    $entity_info = entity_get_info($info['entity type']);
-    $schema[$entity_info['base table']]['fields'] += $fields;
+    $schema[$info['base table']]['fields'] += $fields;
   }
 }
 
