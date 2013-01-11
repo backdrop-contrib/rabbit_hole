@@ -32,12 +32,9 @@ function rh_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
     return;
   }
 
-  // Load the Rabbit Hole form.
-  $rabbit_hole_form = rabbit_hole_form('taxonomy_term', $form['#vocabulary']->machine_name);
+  // Add the Rabbit Hole form.
+  rabbit_hole_form($form, 'taxonomy_term', $form['#vocabulary']->machine_name, 'rh_taxonomy');
 
-  // Add the Rabbit Hole form to the main form array.
-  $form += $rabbit_hole_form;
-  
   // Add a custom submit function that allows our settings to get saved.
   $form['#submit'][] = 'rh_taxonomy_form_vocabulary_submit';
 }
@@ -74,11 +71,8 @@ function rh_taxonomy_form_taxonomy_form_term_alter(&$form, $form_state) {
     return;
   }
 
-  // Load the Rabbit Hole form.
-  $rabbit_hole_form = rabbit_hole_form('taxonomy_term', $form['#bundle'], (object) $form['#term']);
-
-  // Add the Rabbit Hole form to the main form array.
-  $form += $rabbit_hole_form;
+  // Add the Rabbit Hole form.
+  rabbit_hole_form($form, 'taxonomy_term', $form['#bundle'], 'rh_taxonomy', (object) $form['#term']);
 }
 
 /**
