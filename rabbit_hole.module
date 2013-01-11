@@ -140,7 +140,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   // Build the descriptive text. Add some help text for PHP, if the user has the
   // permission to use PHP for evaluation.
   $description = array();
-  $description[] = t('Enter the path or the full URL that the user should get redirected to. Query strings and fragments are supported, such as %example.', array('%example' => 'http://www.example.com/?query=value#fragment'));
+  $description[] = t('Enter the relative path or the full URL that the user should get redirected to. Query strings and fragments are supported, such as %example.', array('%example' => 'http://www.example.com/?query=value#fragment'));
   if (user_access('php redirect ' . $module)) {
     $description[] = t('You are able to evaluate PHP to determine the redirect. Surround your code by !surround. The returned string will replace the PHP part. However, you are able to return !abort if the user shouldn\'t get redirected. The !variable variable is available for use.', array('!surround' => '<code>&lt;?php</code> and <code>?&gt;</code>', '!abort' => '<code>FALSE</code>', '!variable' => '<code>$entity</code>'));
   }
@@ -287,36 +287,30 @@ function rabbit_hole_execute($entity_type, $entity) {
       $redirect = token_replace($redirect, array($entity_info['token type'] => $entity));
 
       // Parse the supplied redirect path in order to get the details.
-      $redirect = parse_url($redirect);
+      $redirect_data = parse_url($redirect);
       
-      // Handle the redirect path. If it hasn't been set or if it has been set
-      // to <front>, we'll set it to '/'. We'll also take the base path of the
-      // Drupal installation in consideration, if a host hasn't been provided.
-      $redirect['path'] = isset($redirect['path']) && $redirect['path'] != '<front>' ? $redirect['path'] : '/';
-      $redirect['path'] = isset($redirect['host']) ? $redirect['path'] : base_path() . preg_replace('/^\//', '', $redirect['path']);
-      
-      // Normalize the query. If a query has been provided, we'll rebuild it to
-      // an array that's suitable for drupal_goto(), and remove it from the
-      // redirect array.
-      if (isset($redirect['query'])) {
-        $query = drupal_get_query_array($redirect['query']);
-        unset($redirect['query']);
+      // Start building the redirect url.
+      $redirect = '';
+
+      // If a host has been provided, we'll make sure that the URL starts with
+      // a scheme, followed by the host and the path. Otherwise, we'll start
+      // with the path, since this is an internal url.
+      if (isset($redirect_data['host'])) {
+        $redirect .= isset($redirect_data['scheme']) ? $redirect_data['scheme'] . '://' : '//';
+        $redirect .= $redirect_data['host'];
+        $redirect .= isset($redirect_data['path']) ? $redirect_data['path'] : '/';
       }
       else {
-        $query = array();
-      }
-      
-      // Normalize the fragment in the same way that we normalize the query.
-      if (isset($redirect['fragment'])) {
-        $fragment = $redirect['fragment'];
-        unset($redirect['fragment']);
-      }
-      else {
-        $fragment = '';
+        $redirect .= $redirect_data['path'];
       }
 
+      // Normalize the query and fragment, to make sure that they're suitable
+      // for drupal_goto().
+      $query = isset($redirect_data['query']) ? drupal_get_query_array($redirect_data['query']) : array();
+      $fragment = isset($redirect_data['fragment']) ? $redirect_data['fragment'] : '';
+
       // Perform the redirect.
-      drupal_goto(http_build_url($redirect), array('query' => $query, 'fragment' => $fragment), $redirect_response);
+      drupal_goto($redirect, array('query' => $query, 'fragment' => $fragment), $redirect_response);
     
     default:
       // There's nothing to do.
