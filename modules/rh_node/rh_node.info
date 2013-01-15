@@ -2,3 +2,4 @@ name = Rabbit Hole nodes
 description = Adds Rabbit Hole functionality for nodes.
 core = 7.x
 dependencies[] = rabbit_hole
+dependencies[] = node
