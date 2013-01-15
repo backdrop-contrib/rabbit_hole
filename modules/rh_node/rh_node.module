@@ -53,8 +53,11 @@ function rh_node_form_node_form_alter(&$form, $form_state) {
   }
 
   // Add a custom submit function. This is used to disable the redirect to
-  // node/123 if Rabbit Hole is enabled.
-  $form['actions']['submit']['#submit'][] = 'rh_node_node_form_submit';
+  // node/123 if Rabbit Hole is enabled and the user doesn't have the bypass
+  // rh_node permission.
+  if (!user_access('bypass rh_node')) {
+    $form['actions']['submit']['#submit'][] = 'rh_node_node_form_submit';
+  }
 }
 
 /**
