@@ -282,30 +282,10 @@ function rabbit_hole_execute($entity_type, $entity) {
       $redirect = token_replace($redirect, array($entity_info['token type'] => $entity));
 
       // Parse the supplied redirect path in order to get the details.
-      $redirect_data = parse_url($redirect);
-      
-      // Start building the redirect url.
-      $redirect = '';
-
-      // If a host has been provided, we'll make sure that the URL starts with
-      // a scheme, followed by the host and the path. Otherwise, we'll start
-      // with the path, since this is an internal url.
-      if (isset($redirect_data['host'])) {
-        $redirect .= isset($redirect_data['scheme']) ? $redirect_data['scheme'] . '://' : '//';
-        $redirect .= $redirect_data['host'];
-        $redirect .= isset($redirect_data['path']) ? $redirect_data['path'] : '/';
-      }
-      else {
-        $redirect .= $redirect_data['path'];
-      }
-
-      // Normalize the query and fragment, to make sure that they're suitable
-      // for drupal_goto().
-      $query = isset($redirect_data['query']) ? drupal_get_query_array($redirect_data['query']) : array();
-      $fragment = isset($redirect_data['fragment']) ? $redirect_data['fragment'] : '';
+      $redirect_data = drupal_parse_url($redirect);
 
       // Perform the redirect.
-      drupal_goto($redirect, array('query' => $query, 'fragment' => $fragment), $redirect_response);
+      drupal_goto($redirect_data['path'], $redirect_data, $redirect_response);
     
     default:
       // There's nothing to do.
