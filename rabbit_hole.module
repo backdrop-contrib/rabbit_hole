@@ -75,16 +75,6 @@ function rabbit_hole_permission() {
  *  A renderable form array.
  */
 function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NULL) {
-  // Attach the basic javascript.
-  $form = array(
-    '#attached' => array(
-      'js' => array(
-        drupal_get_path('module', 'rabbit_hole') . '/rabbit-hole.js',
-        array('data' => array('rabbitHole' => array('redirectValue' => RABBIT_HOLE_PAGE_REDIRECT)), 'type' => 'setting'),
-      ),
-    ),
-  );
-
   // Wrap everything in a fieldset.
   $form['rabbit_hole'] = array(
     '#type' => 'fieldset',
@@ -132,6 +122,11 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#type' => 'fieldset',
     '#title' => t('Redirect settings'),
     '#attributes' => array('class' => array('rabbit-hole-redirect-options')),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="' . $action_setting_name . '"]' => array('value' => '3'),
+      ),
+    ),
   );
   
   // Get the default value for the redirect path.
