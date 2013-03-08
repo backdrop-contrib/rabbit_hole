@@ -136,7 +136,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   // permission to use PHP for evaluation.
   $description = array();
   $description[] = t('Enter the relative path or the full URL that the user should get redirected to. Query strings and fragments are supported, such as %example.', array('%example' => 'http://www.example.com/?query=value#fragment'));
-  if (user_access('php redirect ' . $module)) {
+  if (rabbit_hole_access_php($module)) {
     $description[] = t('You are able to evaluate PHP to determine the redirect. Surround your code by !surround. The returned string will replace the PHP part. However, you are able to return !abort if the user shouldn\'t get redirected. The !variable variable is available for use.', array('!surround' => '<code>&lt;?php</code> and <code>?&gt;</code>', '!abort' => '<code>FALSE</code>', '!variable' => '<code>$entity</code>'));
   }
   $description[] = t('You may enter tokens in this field.');
@@ -148,7 +148,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#value' => $redirect_setting_name,
   );
   $form['rabbit_hole']['redirect'][$redirect_setting_name] = array(
-    '#type' => user_access('php redirect ' . $module) ? 'textarea' : 'textfield',
+    '#type' => rabbit_hole_access_php($module) ? 'textarea' : 'textfield',
     '#title' => t('Redirect path'),
     '#default_value' => $redirect_default_value,
     '#description' => '<p>' . implode('</p><p>', $description) . '</p>',
@@ -186,7 +186,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   // If the redirect path contains PHP, and the user doesn't have permission to
   // use PHP for evaluation, we'll disable access to the path setting, and print
   // some helpful information about what's going on.
-  if (rabbit_hole_contains_php($redirect_default_value) && !user_access('php redirect ' . $module)) {
+  if (rabbit_hole_contains_php($redirect_default_value) && !rabbit_hole_access_php($module)) {
     $form['rabbit_hole']['redirect']['#description'] = t("You're not able to edit the redirect path since it contain's PHP, and you're not allowed to evaluate PHP for this redirect.");
     $form['rabbit_hole']['redirect'][$redirect_setting_name]['#access'] = FALSE;
     if (isset($form['rabbit_hole']['redirect']['token_info'])) {
@@ -206,7 +206,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
 function rabbit_hole_form_validate($form, &$form_state) {
   // If there is PHP in the redirect path, make sure that the user has the
   // permission to evaluate PHP.
-  if (rabbit_hole_contains_php($form_state['values'][$form_state['values']['redirect_setting_name']]) && !user_access('php redirect ' . $form_state['values']['rh_module'])) {
+  if (rabbit_hole_contains_php($form_state['values'][$form_state['values']['redirect_setting_name']]) && !rabbit_hole_access_php($form_state['values']['rh_module'])) {
     form_set_error($form_state['values']['redirect_setting_name'], t("You don't have permission to evaluate PHP in the redirect path."));
   }
 }
@@ -328,6 +328,28 @@ function rabbit_hole_eval($code, $entity) {
   $code = trim(str_replace(array('<?php', '?>'), '', $code));
 
   return eval($code);
+}
+
+/**
+ * Checks if current user can specify rules using php.
+ *
+ * If the php module isn't enabled this function will always return
+ * FALSE. This is done to prevent users using the php rules to execute
+ * arbitary code on the site.
+ *
+ * @param string $module
+ *  The name of the module the user is changing the rule for.
+ *
+ * @return bool
+ *  TRUE if the user can use php, otherwise FALSE.
+ */
+function rabbit_hole_access_php($module) {
+  // Don't allow if the php module isn't enabled.
+  if (!module_exists('php')) {
+    return FALSE;
+  }
+
+  return user_access('php redirect ' . $module);
 }
 
 /**
