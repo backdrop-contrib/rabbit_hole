@@ -31,7 +31,7 @@ function rh_node_form_node_type_form_alter(&$form, $form_state) {
     // The user doesn't have access.
     return;
   }
-  
+
   // Add the Rabbit Hole form, and add an extra javascript file that's needed
   // for the fieldset summary.
   rabbit_hole_form($form, 'node', $form['#node_type']->type, 'rh_node');
@@ -68,7 +68,7 @@ function rh_node_form_node_form_alter(&$form, $form_state) {
  * if any Rabbit Hole action is enabled. This works by redirecting the user to
  * node/123/edit, if a destination parameter hasn't been set.
  *
- * @see node_form_submit().
+ * @see node_form_submit()
  */
 function rh_node_node_form_submit($form, &$form_state) {
   // Get the action. Either the one specified for this node, or the default

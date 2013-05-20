@@ -53,7 +53,7 @@ function rh_user_form_user_admin_settings_submit($form, $form_state) {
   variable_set('rh_user_action_user', $values['rh_user_action']);
   variable_set('rh_user_redirect_user', $values['rh_user_redirect']);
   variable_set('rh_user_redirect_response_user', $values['rh_user_redirect_response']);
-  
+
   // Delete the ones that are automatically saved by Drupal.
   variable_del('rh_user_action');
   variable_del('rh_user_redirect');
