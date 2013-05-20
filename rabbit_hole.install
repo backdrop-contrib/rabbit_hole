@@ -102,3 +102,16 @@ function rabbit_hole_update_7002() {
     db_change_field($info['base table'], 'rh_redirect', 'rh_redirect', $fields['rh_redirect']);
   }
 }
+
+/**
+ * Set the new override setting to TRUE for existing bundles.
+ */
+function rabbit_hole_update_7003() {
+  $modules = module_invoke_all('rabbit_hole');
+  foreach ($modules as $module => $info) {
+    $entity_info = entity_get_info($info['entity type']);
+    foreach ($entity_info['bundles'] as $bundle => $bundle_info) {
+      variable_set('rh_' . $info['entity type'] . '_override_' . $bundle, TRUE);
+    }
+  }
+}

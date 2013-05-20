@@ -93,13 +93,23 @@ function rabbit_hole_field_extra_fields() {
  * @param string $module
  *   The name of the module that invokes this function.
  * @param object $entity
- *   The entity that we're adding the form to, e.g. a node. This might be NULL
- *   if we're about to create the entity.
- *
- * @return array
- *   A renderable form array.
+ *   The entity that we're adding the form to, e.g. a node. This will be NULL if
+ *   the form is being attached to the bundle configuration form.
  */
 function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NULL) {
+  if (isset($entity) && !rabbit_hole_get_override_bundle($entity_type, $bundle)) {
+    // The form is about to be attached to an entity, but the bundle isn't
+    // allowed to be overridden. Exit.
+    return;
+  }
+
+  // Get information about the entity.
+  $entity_info = entity_get_info($entity_type);
+  $entity_label = strtolower(isset($entity_info['plural label']) ? $entity_info['plural label'] : $entity_info['label']);
+
+  // Get the label for the bundle.
+  $bundle_label = $entity_info['bundles'][$bundle]['label'];
+
   // Wrap everything in a fieldset.
   $form['rabbit_hole'] = array(
     '#type' => 'fieldset',
@@ -116,6 +126,16 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#value' => $module,
   );
 
+  // Add override setting if we're editing a bundle.
+  if (!isset($entity)) {
+    $form['rabbit_hole']['rh_' . $entity_type . '_override'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Allow these settings to be overridden for individual entities'),
+      '#default_value' => rabbit_hole_get_override_bundle($entity_type, $bundle),
+      '#description' => t('If this is checked, users with the %permission permission will be able to override these settings for individual entities.', array('%permission' => t('Administer Rabbit Hole settings for @entity_type', array('@entity_type' => $entity_label)))),
+    );
+  }
+
   // Build the options for the action setting.
   $action_options = array(
     RABBIT_HOLE_DISPLAY_CONTENT => t('Display the page'),
@@ -126,8 +146,9 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   if (isset($entity)) {
     // Add an option if we are editing an entity. This will allow us to use the
     // configuration for the bundle.
+    $action_bundle = rabbit_hole_get_action_bundle($entity_type, $bundle);
     $action_options = array(
-      RABBIT_HOLE_USE_DEFAULT => t('Bundle default'),
+      RABBIT_HOLE_USE_DEFAULT => t('Global @bundle behavior (@setting)', array('@bundle' => strtolower($bundle_label), '@setting' => $action_options[$action_bundle])),
     ) + $action_options;
   }
 
@@ -138,7 +159,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#title' => t('Behavior'),
     '#options' => $action_options,
     '#default_value' => isset($entity) ? rabbit_hole_get_action_entity($entity_type, $entity) : (!empty($bundle) ? rabbit_hole_get_action_bundle($entity_type, $bundle) : RABBIT_HOLE_DISPLAY_CONTENT),
-    '#description' => t('What should happen when someone tries to visit the entity page?'),
+    '#description' => t('What should happen when someone tries to visit a @bundle page?', array('@bundle' => strtolower($bundle_label))),
     '#attributes' => array('class' => array('rabbit-hole-action-setting')),
   );
 
@@ -441,7 +462,7 @@ function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
  */
 function rabbit_hole_get_action($entity_type, $entity) {
   $bundle = rabbit_hole_entity_get_bundle($entity_type, $entity);
-  return isset($entity) && isset($entity->rh_action) ? ($entity->rh_action != RABBIT_HOLE_USE_DEFAULT ? $entity->rh_action : rabbit_hole_get_action_bundle($entity_type, $bundle)) : rabbit_hole_get_action_bundle($entity_type, $bundle);
+  return isset($entity) && isset($entity->rh_action) && rabbit_hole_get_override_bundle($entity_type, $bundle) ? ($entity->rh_action != RABBIT_HOLE_USE_DEFAULT ? $entity->rh_action : rabbit_hole_get_action_bundle($entity_type, $bundle)) : rabbit_hole_get_action_bundle($entity_type, $bundle);
 }
 
 /**
@@ -487,6 +508,22 @@ function rabbit_hole_get_redirect_bundle($entity_type, $bundle) {
  */
 function rabbit_hole_get_redirect_response_bundle($entity_type, $bundle) {
   return variable_get('rh_' . $entity_type . '_redirect_response_' . $bundle, RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT);
+}
+
+/**
+ * Gets the override settings for a bundle.
+ *
+ * @param string $entity_type
+ *   The entity type of the bundle.
+ * @param string $bundle
+ *   The bundle that we're checking.
+ *
+ * @return bool
+ *   TRUE or FALSE depending on wether or not the settings are able to be
+ *   overridden for individual entities.
+ */
+function rabbit_hole_get_override_bundle($entity_type, $bundle) {
+  return variable_get('rh_' . $entity_type . '_override_' . $bundle, FALSE);
 }
 
 /**

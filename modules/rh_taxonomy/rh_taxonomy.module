@@ -50,6 +50,7 @@ function rh_taxonomy_form_vocabulary_submit($form, $form_state) {
   // the administer rh_taxonomy permission. In this case, we'll set the
   // variables according to the stored values for the old machine name. We'll
   // use the old machine name in case it has changed.
+  variable_set('rh_taxonomy_term_override_' . $values['machine_name'], isset($values['rh_taxonomy_term_override']) ? $values['rh_taxonomy_term_override'] : variable_get('rh_taxonomy_term_override_' . $values['old_machine_name']));
   variable_set('rh_taxonomy_term_action_' . $values['machine_name'], isset($values['rh_taxonomy_term_action']) ? $values['rh_taxonomy_term_action'] : variable_get('rh_taxonomy_term_action_' . $values['old_machine_name']));
   variable_set('rh_taxonomy_term_redirect_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect']) ? $values['rh_taxonomy_term_redirect'] : variable_get('rh_taxonomy_term_redirect_' . $values['old_machine_name']));
   variable_set('rh_taxonomy_term_redirect_response_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect_response']) ? $values['rh_taxonomy_term_redirect_response'] : variable_get('rh_taxonomy_term_redirect_response_' . $values['old_machine_name']));

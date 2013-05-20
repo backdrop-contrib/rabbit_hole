@@ -50,11 +50,13 @@ function rh_user_form_user_admin_settings_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables.
+  variable_set('rh_user_override_user', $values['rh_user_override']);
   variable_set('rh_user_action_user', $values['rh_user_action']);
   variable_set('rh_user_redirect_user', $values['rh_user_redirect']);
   variable_set('rh_user_redirect_response_user', $values['rh_user_redirect_response']);
 
   // Delete the ones that are automatically saved by Drupal.
+  variable_del('rh_user_override');
   variable_del('rh_user_action');
   variable_del('rh_user_redirect');
   variable_del('rh_user_redirect_response');
