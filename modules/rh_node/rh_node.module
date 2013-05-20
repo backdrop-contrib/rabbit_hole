@@ -27,11 +27,6 @@ function rh_node_rabbit_hole() {
  * be used as default for every node of this node type.
  */
 function rh_node_form_node_type_form_alter(&$form, $form_state) {
-  if (!user_access('administer rh_node')) {
-    // The user doesn't have access.
-    return;
-  }
-
   // Add the Rabbit Hole form, and add an extra javascript file that's needed
   // for the fieldset summary.
   rabbit_hole_form($form, 'node', $form['#node_type']->type, 'rh_node');
@@ -45,12 +40,10 @@ function rh_node_form_node_type_form_alter(&$form, $form_state) {
  * override the default Rabbit Hole options.
  */
 function rh_node_form_node_form_alter(&$form, $form_state) {
-  if (user_access('administer rh_node')) {
-    // Add the Rabbit Hole form, and add an extra javascript file that's needed
-    // for the fieldset summary.
-    rabbit_hole_form($form, 'node', $form['#node']->type, 'rh_node', $form['#node']);
-    $form['#attached']['js'][] = drupal_get_path('module', 'rh_node') . '/rh-node.js';
-  }
+  // Add the Rabbit Hole form, and add an extra javascript file that's needed
+  // for the fieldset summary.
+  rabbit_hole_form($form, 'node', $form['#node']->type, 'rh_node', $form['#node']);
+  $form['#attached']['js'][] = drupal_get_path('module', 'rh_node') . '/rh-node.js';
 
   // Add a custom submit function. This is used to disable the redirect to
   // node/123 if Rabbit Hole is enabled and the user doesn't have the bypass

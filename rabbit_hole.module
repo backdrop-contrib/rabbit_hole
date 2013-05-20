@@ -99,6 +99,11 @@ function rabbit_hole_field_extra_fields() {
  *   the form is being attached to the bundle configuration form.
  */
 function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NULL) {
+  if (!user_access('administer ' . $module)) {
+    // The user doesn't have access, exit.
+    return;
+  }
+
   if (isset($entity) && !rabbit_hole_get_override_bundle($entity_type, $bundle)) {
     // The form is about to be attached to an entity, but the bundle isn't
     // allowed to be overridden. Exit.

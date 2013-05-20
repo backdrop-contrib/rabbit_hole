@@ -27,10 +27,8 @@ function rh_taxonomy_rabbit_hole() {
  * be used as default for every term of this vocabulary.
  */
 function rh_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
-  if (user_access('administer rh_taxonomy')) {
-    // Add the Rabbit Hole form.
-    rabbit_hole_form($form, 'taxonomy_term', $form['#vocabulary']->machine_name, 'rh_taxonomy');
-  }
+  // Add the Rabbit Hole form.
+  rabbit_hole_form($form, 'taxonomy_term', $form['#vocabulary']->machine_name, 'rh_taxonomy');
 
   // Add a custom submit function that allows our settings to get saved.
   $form['#submit'][] = 'rh_taxonomy_form_vocabulary_submit';
@@ -68,11 +66,6 @@ function rh_taxonomy_form_vocabulary_submit($form, $form_state) {
  * be able to override the default Rabbit Hole options.
  */
 function rh_taxonomy_form_taxonomy_form_term_alter(&$form, $form_state) {
-  if (!user_access('administer rh_taxonomy')) {
-    // The user doesn't have access.
-    return;
-  }
-
   // Add the Rabbit Hole form.
   rabbit_hole_form($form, 'taxonomy_term', $form['#bundle'], 'rh_taxonomy', (object) $form['#term']);
 }

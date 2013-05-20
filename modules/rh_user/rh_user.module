@@ -27,11 +27,6 @@ function rh_user_rabbit_hole() {
  * settings will be used as default for every user.
  */
 function rh_user_form_user_admin_settings_alter(&$form, $form_state) {
-  if (!user_access('administer rh_user')) {
-    // The user doesn't have access.
-    return;
-  }
-
   // Add the Rabbit Hole form.
   rabbit_hole_form($form, 'user', 'user', 'rh_user');
 
@@ -65,13 +60,15 @@ function rh_user_form_user_admin_settings_submit($form, $form_state) {
 /**
  * Implements hook_form_alter().
  */
-function rh_user_form_alter(&$form, &$form_state, $form_id) {
-  if (!user_access('administer rh_user') || !in_array($form_id, array('user_register_form', 'user_profile_form'))) {
-    // The user doesn't have access, or we're not on the user profile or
-    // register form.
-    return;
-  }
+function rh_user_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  // Add the Rabbit Hole form.
+  rabbit_hole_form($form, 'user', 'user', 'rh_user', $form['#user']);
+}
 
+/**
+ * Implements hook_form_alter().
+ */
+function rh_user_form_user_register_form_alter(&$form, &$form_state, $form_id) {
   // Add the Rabbit Hole form.
   rabbit_hole_form($form, 'user', 'user', 'rh_user', $form['#user']);
 }
