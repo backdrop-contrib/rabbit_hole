@@ -53,6 +53,31 @@ function rabbit_hole_permission() {
 }
 
 /**
+ * Implements hook_field_extra_fields().
+ */
+function rabbit_hole_field_extra_fields() {
+  $extra = array();
+
+  // Get the modules that implements hook_rabbit_hole().
+  $modules = module_invoke_all('rabbit_hole');
+
+  // Add a form field for each bundle for every entity type that is controlled
+  // by Rabbit Hole.
+  foreach ($modules as $module => $info) {
+    $entity_info = entity_get_info($info['entity type']);
+    foreach ($entity_info['bundles'] as $bundle => $bundle_info) {
+      $extra[$info['entity type']][$bundle]['form'] = array('rabbit_hole' => array(
+        'label' => t('Rabbit Hole'),
+        'description' => t('Rabbit Hole configuration'),
+        'weight' => 0,
+      ));
+    }
+  }
+
+  return $extra;
+}
+
+/**
  * Form structure for the Rabbit Hole configuration.
  *
  * This should be used by other modules that wish to implement the Rabbit Hole
@@ -377,6 +402,9 @@ function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   // that is handled by Rabbit Hole.
   foreach ($primary['output'] as $delta => $element) {
     foreach ($modules as $module => $info) {
+    if (!$element['#link']['path']) {
+      die();
+    }
       if ($element['#link']['path'] == $info['view path']) {
         // Found the View tab, get the Rabbit Hole action for this entity, and
         // remove the tab if any Rabbit Hole action has been set.
