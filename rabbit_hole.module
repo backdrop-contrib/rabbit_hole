@@ -256,6 +256,13 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   // callback.
   $attach += $form;
   $attach['#validate'][] = 'rabbit_hole_form_validate';
+
+  // If the implementing module provides a submit function for the bundle form,
+  // we'll add it as a submit function for the attached form.
+  $submit_function = $module . '_bundle_form_submit';
+  if (function_exists($submit_function)) {
+    $attach['#submit'][] = $submit_function;
+  }
 }
 
 /**

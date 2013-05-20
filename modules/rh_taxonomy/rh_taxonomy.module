@@ -29,18 +29,15 @@ function rh_taxonomy_rabbit_hole() {
 function rh_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
   // Add the Rabbit Hole form.
   rabbit_hole_form($form, 'taxonomy_term', $form['#vocabulary']->machine_name, 'rh_taxonomy');
-
-  // Add a custom submit function that allows our settings to get saved.
-  $form['#submit'][] = 'rh_taxonomy_form_vocabulary_submit';
 }
 
 /**
- * Submit callback for the vocabulary form.
+ * Submit callback for the bundle form.
  *
  * This will set the value of the variables, and update the name of the
  * variables if the machine name of the vocabulary has changed.
  */
-function rh_taxonomy_form_vocabulary_submit($form, $form_state) {
+function rh_taxonomy_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables. This will be set to the provided values,

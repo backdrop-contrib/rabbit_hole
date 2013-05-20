@@ -29,19 +29,16 @@ function rh_user_rabbit_hole() {
 function rh_user_form_user_admin_settings_alter(&$form, $form_state) {
   // Add the Rabbit Hole form.
   rabbit_hole_form($form, 'user', 'user', 'rh_user');
-
-  // Add a custom submit function that allows our settings to get saved.
-  $form['#submit'][] = 'rh_user_form_user_admin_settings_submit';
 }
 
 /**
- * Submit callback for the account settings form.
+ * Submit callback for the bundle form.
  *
  * This will set the values of the variables. Drupal will save these settings by
  * default, but the name of those variables won't match our naming conventions,
  * so we'll have to delete those after our variables has been saved.
  */
-function rh_user_form_user_admin_settings_submit($form, $form_state) {
+function rh_user_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables.
