@@ -343,10 +343,9 @@ function rabbit_hole_execute($entity_type, $entity) {
       $redirect = trim(str_replace(array("\r", "\n"), '', $redirect));
 
       // Replace any tokens with real values.
-      if (isset($entity_info['token type'])) {
-        $entity_info = entity_get_info($entity_type);
-        $redirect = token_replace($redirect, array($entity_info['token type'] => $entity));
-      }
+      $entity_info = entity_get_info($entity_type);
+      $token_data = isset($entity_info['token type']) ? array($entity_info['token type'] => $entity) : array();
+      $redirect = token_replace($redirect, $token_data);
 
       // Parse the supplied redirect path in order to get the details.
       $redirect_data = drupal_parse_url($redirect);
