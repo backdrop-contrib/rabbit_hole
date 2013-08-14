@@ -114,8 +114,9 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   $entity_info = entity_get_info($entity_type);
   $entity_label = strtolower(isset($entity_info['plural label']) ? $entity_info['plural label'] : $entity_info['label']);
 
-  // Get the label for the bundle.
-  $bundle_label = $entity_info['bundles'][$bundle]['label'];
+  // Get the label for the bundle. This won't be set when the user is creating a
+  // new bundle. In that case, fallback to "this bundle".
+  $bundle_label = isset($entity_info['bundles'][$bundle]['label']) ? $entity_info['bundles'][$bundle]['label'] : 'this bundle';
 
   // Wrap everything in a fieldset.
   $form['rabbit_hole'] = array(
@@ -166,7 +167,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#title' => t('Behavior'),
     '#options' => $action_options,
     '#default_value' => isset($entity) ? rabbit_hole_get_action_entity($entity_type, $entity) : (!empty($bundle) ? rabbit_hole_get_action_bundle($entity_type, $bundle) : RABBIT_HOLE_DISPLAY_CONTENT),
-    '#description' => t('What should happen when someone tries to visit a @bundle page?', array('@bundle' => strtolower($bundle_label))),
+    '#description' => t('What should happen when someone tries to visit an entity page for @bundle?', array('@bundle' => strtolower(isset($entity_info['plural label']) ? $entity_info['plural label'] : $bundle_label))),
     '#attributes' => array('class' => array('rabbit-hole-action-setting')),
   );
 
