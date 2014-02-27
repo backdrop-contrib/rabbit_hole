@@ -437,6 +437,11 @@ function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   // Iterate through the primary tabs, and look for the View tab for any entity
   // that is handled by Rabbit Hole.
   foreach ($primary['output'] as $delta => $element) {
+    // If path is not set on this item, just continue to the next item.
+    if (!isset($element['#link']['path'])) {
+      continue;
+    }
+
     foreach ($modules as $module => $info) {
       if ($element['#link']['path'] == $info['view path']) {
         // Found the View tab, get the Rabbit Hole action for this entity, and
