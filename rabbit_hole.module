@@ -639,9 +639,9 @@ function rabbit_hole_schema_alter(&$schema) {
 }
 
 /**
- * Implements hook_modules_installed().
+ * Implements hook_modules_enabled().
  */
-function rabbit_hole_modules_installed($modules) {
+function rabbit_hole_modules_enabled($modules) {
   foreach ($modules as $module) {
     // If this module implements hook_rabbit_hole(), we should add the Rabbit
     // Hole fields to the base table of the entity type that this module is
