@@ -89,6 +89,23 @@ function rh_node_node_view($node, $view_mode, $langcode) {
 }
 
 /**
+ * Implements hook_ctools_render_alter().
+ *
+ * This is done since hook_node_view never gets called if the node is rendered
+ * by Ctools.
+ */
+function rh_node_ctools_render_alter($info, $page, $context) {
+  if ($page) {
+    if (isset($context['handler']) && !empty($context['handler']->conf['context']) && $context['handler']->task === 'node_view') {
+      $node = $context['contexts'][$context['handler']->conf['context']]->data;
+      if (!user_access('bypass rh_node')) {
+        rabbit_hole_execute('node', $node);
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_node_type_delete().
  */
 function rh_node_node_type_delete($type) {
