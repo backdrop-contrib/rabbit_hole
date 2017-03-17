@@ -1,0 +1,5 @@
+name = Rabbit Hole field collections
+description = Adds Rabbit Hole functionality for field collections.
+core = 7.x
+dependencies[] = rabbit_hole
+dependencies[] = field_collection
