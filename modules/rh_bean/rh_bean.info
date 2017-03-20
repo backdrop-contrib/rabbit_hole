@@ -1,0 +1,5 @@
+name = Rabbit Hole beans
+description = Adds Rabbit Hole functionality for block entities (beans).
+core = 7.x
+dependencies[] = rabbit_hole
+dependencies[] = bean
