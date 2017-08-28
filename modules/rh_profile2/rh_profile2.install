@@ -1,0 +1,28 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the rh_profile2 module.
+ *
+ */
+
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function rh_profile2_update_last_removed() {
+  return;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function rh_profile2_update_1000() {
+  $config = config('rh_profile2.settings');
+}
+
+/**
+ * Implements hook_install().
+ */
+function rh_profile2_install() {
+  // Dynamically generated variable data was detected.
+}

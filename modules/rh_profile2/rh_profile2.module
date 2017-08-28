@@ -39,7 +39,7 @@ function rh_profile2_form_profile2_type_form_alter(&$form, $form_state) {
   // for the fieldset summary.
   rabbit_hole_form($form, 'profile2', $form_state['profile2_type']->type, 'rh_profile2');
   if (isset($form['rabbit_hole'])) {
-    $form['#attached']['js'][] = drupal_get_path('module', 'rh_profile2') . '/rh-profile2.js';
+    $form['#attached']['js'][] = backdrop_get_path('module', 'rh_profile2') . '/rh-profile2.js';
   }
 }
 
@@ -55,10 +55,10 @@ function rh_profile2_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables.
-  variable_set('rh_profile2_override_' . $values['type'], $values['rh_profile2_override']);
-  variable_set('rh_profile2_action_' . $values['type'], $values['rh_profile2_action']);
-  variable_set('rh_profile2_redirect_' . $values['type'], $values['rh_profile2_redirect']);
-  variable_set('rh_profile2_redirect_response_' . $values['type'], $values['rh_profile2_redirect_response']);
+  config_set('rh_profile2.settings', 'rh_profile2_override_' . $values['type'], $values['rh_profile2_override']);
+  config_set('rh_profile2.settings', 'rh_profile2_action_' . $values['type'], $values['rh_profile2_action']);
+  config_set('rh_profile2.settings', 'rh_profile2_redirect_' . $values['type'], $values['rh_profile2_redirect']);
+  config_set('rh_profile2.settings', 'rh_profile2_redirect_response_' . $values['type'], $values['rh_profile2_redirect_response']);
 }
 
 /**
@@ -84,7 +84,7 @@ function rh_profile2_form_profile2_form_alter(&$form, $form_state) {
     if (isset($element['#entity_type']) && $element['#entity_type'] == 'profile2') {
       rabbit_hole_form($form, 'profile2', $element['#bundle'], 'rh_profile2', $form_state['profiles'][$element['#bundle']]);
       if (isset($form['rabbit_hole'])) {
-        $form['#attached']['js'][] = drupal_get_path('module', 'rh_profile2') . '/rh-profile2.js';
+        $form['#attached']['js'][] = backdrop_get_path('module', 'rh_profile2') . '/rh-profile2.js';
 
         array_unshift($form['#submit'], 'rh_profile2_profile2_form_prepare_submit');
         if (!user_access('bypass rh_profile2')) {

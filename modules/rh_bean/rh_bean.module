@@ -30,7 +30,7 @@ function rh_bean_form_bean_admin_ui_type_form_alter(&$form, $form_state) {
   // Add the Rabbit Hole form.
   rabbit_hole_form($form, 'bean', $form['bean_type']['#value']->type, 'rh_bean');
   if (isset($form['rabbit_hole'])) {
-    $form['rabbit_hole']['#attached']['js'][] = drupal_get_path('module', 'rh_bean') . '/rh-bean.js';
+    $form['rabbit_hole']['#attached']['js'][] = backdrop_get_path('module', 'rh_bean') . '/rh-bean.js';
   }
 }
 
@@ -43,10 +43,10 @@ function rh_bean_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables.
-  variable_set('rh_bean_override_' . $values['bean_type']->type, $values['rh_bean_override']);
-  variable_set('rh_bean_action_' . $values['bean_type']->type, $values['rh_bean_action']);
-  variable_set('rh_bean_redirect_' . $values['bean_type']->type, $values['rh_bean_redirect']);
-  variable_set('rh_bean_redirect_response_' . $values['bean_type']->type, $values['rh_bean_redirect_response']);
+  config_set('rh_bean.settings', 'rh_bean_override_' . $values['bean_type']->type, $values['rh_bean_override']);
+  config_set('rh_bean.settings', 'rh_bean_action_' . $values['bean_type']->type, $values['rh_bean_action']);
+  config_set('rh_bean.settings', 'rh_bean_redirect_' . $values['bean_type']->type, $values['rh_bean_redirect']);
+  config_set('rh_bean.settings', 'rh_bean_redirect_response_' . $values['bean_type']->type, $values['rh_bean_redirect_response']);
 }
 
 /**
@@ -60,7 +60,7 @@ function rh_bean_form_bean_form_alter(&$form, $form_state) {
   // for the fieldset summary.
   rabbit_hole_form($form, 'bean', $form_state['bean']->type, 'rh_bean', $form_state['bean']);
   if (isset($form['rabbit_hole'])) {
-    $form['#attached']['js'][] = drupal_get_path('module', 'rh_bean') . '/rh-bean.js';
+    $form['#attached']['js'][] = backdrop_get_path('module', 'rh_bean') . '/rh-bean.js';
   }
 
   // Add a custom submit function. This is used to disable the redirect to

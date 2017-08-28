@@ -31,7 +31,7 @@ function rh_node_form_node_type_form_alter(&$form, $form_state) {
   // for the fieldset summary.
   rabbit_hole_form($form, 'node', $form['#node_type']->type, 'rh_node');
   if (isset($form['rabbit_hole'])) {
-    $form['rabbit_hole']['#attached']['js'][] = drupal_get_path('module', 'rh_node') . '/rh-node.js';
+    $form['rabbit_hole']['#attached']['js'][] = backdrop_get_path('module', 'rh_node') . '/rh-node.js';
   }
 }
 
@@ -46,7 +46,7 @@ function rh_node_form_node_form_alter(&$form, $form_state) {
   // for the fieldset summary.
   rabbit_hole_form($form, 'node', $form['#node']->type, 'rh_node', $form['#node']);
   if (isset($form['rabbit_hole'])) {
-    $form['rabbit_hole']['#attached']['js'][] = drupal_get_path('module', 'rh_node') . '/rh-node.js';
+    $form['rabbit_hole']['#attached']['js'][] = backdrop_get_path('module', 'rh_node') . '/rh-node.js';
   }
 
   // Add a custom submit function. This is used to disable the redirect to

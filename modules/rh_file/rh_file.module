@@ -40,10 +40,10 @@ function rh_file_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables.
-  variable_set('rh_file_override_' . $values['type'], $values['rh_file_override']);
-  variable_set('rh_file_action_' . $values['type'], $values['rh_file_action']);
-  variable_set('rh_file_redirect_' . $values['type'], $values['rh_file_redirect']);
-  variable_set('rh_file_redirect_response_' . $values['type'], $values['rh_file_redirect_response']);
+  config_set('rh_file.settings', 'rh_file_override_' . $values['type'], $values['rh_file_override']);
+  config_set('rh_file.settings', 'rh_file_action_' . $values['type'], $values['rh_file_action']);
+  config_set('rh_file.settings', 'rh_file_redirect_' . $values['type'], $values['rh_file_redirect']);
+  config_set('rh_file.settings', 'rh_file_redirect_response_' . $values['type'], $values['rh_file_redirect_response']);
 }
 
 /**
@@ -73,7 +73,7 @@ function rh_file_form_file_entity_edit_alter(&$form, $form_state) {
   // for the fieldset summary.
   rabbit_hole_form($form, 'file', $form_state['file']->type, 'rh_file', $form_state['file']);
   if (isset($form['rabbit_hole'])) {
-    $form['rabbit_hole']['#attached']['js'][] = drupal_get_path('module', 'rh_file') . '/rh-file.js';
+    $form['rabbit_hole']['#attached']['js'][] = backdrop_get_path('module', 'rh_file') . '/rh-file.js';
   }
 
   // Add a custom submit function. This is used to disable the redirect to

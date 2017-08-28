@@ -1,0 +1,28 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the rh_node module.
+ *
+ */
+
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function rh_node_update_last_removed() {
+  return;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function rh_node_update_1000() {
+  $config = config('rh_node.settings');
+}
+
+/**
+ * Implements hook_install().
+ */
+function rh_node_install() {
+  // Dynamically generated variable data was detected.
+}

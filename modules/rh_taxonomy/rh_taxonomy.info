@@ -1,5 +1,6 @@
 name = Rabbit Hole taxonomy terms
 description = Adds Rabbit Hole functionality for taxonomy terms.
-core = 7.x
+backdrop = 1.x
+type = module
 dependencies[] = rabbit_hole
 dependencies[] = taxonomy

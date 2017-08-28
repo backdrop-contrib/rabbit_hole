@@ -51,10 +51,10 @@ function rh_field_collection_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
   $bundle = $values['instance']['field_name'];
 
-  variable_set('rh_field_collection_item_override_' . $bundle, $values['rh_field_collection_item_override']);
-  variable_set('rh_field_collection_item_action_' . $bundle, $values['rh_field_collection_item_action']);
-  variable_set('rh_field_collection_item_redirect_' . $bundle, $values['rh_field_collection_item_redirect']);
-  variable_set('rh_field_collection_item_redirect_response_' . $bundle, $values['rh_field_collection_item_redirect_response']);
+  config_set('rh_field_collection.settings', 'rh_field_collection_item_override_' . $bundle, $values['rh_field_collection_item_override']);
+  config_set('rh_field_collection.settings', 'rh_field_collection_item_action_' . $bundle, $values['rh_field_collection_item_action']);
+  config_set('rh_field_collection.settings', 'rh_field_collection_item_redirect_' . $bundle, $values['rh_field_collection_item_redirect']);
+  config_set('rh_field_collection.settings', 'rh_field_collection_item_redirect_response_' . $bundle, $values['rh_field_collection_item_redirect_response']);
 }
 
 /**

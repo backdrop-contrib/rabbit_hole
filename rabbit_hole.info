@@ -1,3 +1,4 @@
 name = Rabbit Hole
 description = Basic functionality that is shared among the different Rabbit Hole modules.
-core = 7.x
+backdrop = 1.x
+type = module

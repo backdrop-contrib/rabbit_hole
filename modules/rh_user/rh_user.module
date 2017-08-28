@@ -34,7 +34,7 @@ function rh_user_form_user_admin_settings_alter(&$form, $form_state) {
 /**
  * Submit callback for the bundle form.
  *
- * This will set the values of the variables. Drupal will save these settings by
+ * This will set the values of the variables. Backdrop will save these settings by
  * default, but the name of those variables won't match our naming conventions,
  * so we'll have to delete those after our variables has been saved.
  */
@@ -42,16 +42,16 @@ function rh_user_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables.
-  variable_set('rh_user_override_user', $values['rh_user_override']);
-  variable_set('rh_user_action_user', $values['rh_user_action']);
-  variable_set('rh_user_redirect_user', $values['rh_user_redirect']);
-  variable_set('rh_user_redirect_response_user', $values['rh_user_redirect_response']);
+  config_set('rh_user.settings', 'rh_user_override_user', $values['rh_user_override']);
+  config_set('rh_user.settings', 'rh_user_action_user', $values['rh_user_action']);
+  config_set('rh_user.settings', 'rh_user_redirect_user', $values['rh_user_redirect']);
+  config_set('rh_user.settings', 'rh_user_redirect_response_user', $values['rh_user_redirect_response']);
 
-  // Delete the ones that are automatically saved by Drupal.
-  variable_del('rh_user_override');
-  variable_del('rh_user_action');
-  variable_del('rh_user_redirect');
-  variable_del('rh_user_redirect_response');
+  // Delete the ones that are automatically saved by Backdrop.
+  config_clear('rh_user.settings', 'rh_user_override');
+  config_clear('rh_user.settings', 'rh_user_action');
+  config_clear('rh_user.settings', 'rh_user_redirect');
+  config_clear('rh_user.settings', 'rh_user_redirect_response');
 }
 
 /**

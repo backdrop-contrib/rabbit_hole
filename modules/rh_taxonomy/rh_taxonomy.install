@@ -5,9 +5,38 @@
  * Update instructions for Rabbit Hole taxonomy terms.
  */
 
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function rh_taxonomy_update_7001() { }
+
 /**
- * Change the weight of Rabbit Hole taxonomy terms to 999.
+ * Implements hook_update_last_removed().
  */
-function rh_taxonomy_update_7001() {
-  db_query("UPDATE {system} SET weight = 999 WHERE name = 'rh_taxonomy'");
+function rh_taxonomy_update_last_removed() {
+  return;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function rh_taxonomy_update_1000() {
+  $config = config('rh_taxonomy.settings');
+  $config->set('rh_taxonomy_term_override_valuesold_machine_name', update_variable_get('rh_taxonomy_term_override_valuesold_machine_name', 'dynamic variable in file /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 53'));
+  $config->set('rh_taxonomy_term_action_valuesold_machine_name', update_variable_get('rh_taxonomy_term_action_valuesold_machine_name', 'dynamic variable in file /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 54'));
+  $config->set('rh_taxonomy_term_redirect_valuesold_machine_name', update_variable_get('rh_taxonomy_term_redirect_valuesold_machine_name', 'dynamic variable in file /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 55'));
+  $config->set('rh_taxonomy_term_redirect_response_valuesold_machine_name', update_variable_get('rh_taxonomy_term_redirect_response_valuesold_machine_name', 'dynamic variable in file /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 56'));
+  update_variable_del('rh_taxonomy_term_override_valuesold_machine_name');
+  update_variable_del('rh_taxonomy_term_action_valuesold_machine_name');
+  update_variable_del('rh_taxonomy_term_redirect_valuesold_machine_name');
+  update_variable_del('rh_taxonomy_term_redirect_response_valuesold_machine_name');
+}
+
+/**
+ * Implements hook_install().
+ */
+function rh_taxonomy_install() {
+  // Dynamically generated variable data was detected.
+  // /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 53
+  // /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 54
+  // /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 55
+  // /rabbit_hole/modules/rh_taxonomy/rh_taxonomy.module line 56
 }
