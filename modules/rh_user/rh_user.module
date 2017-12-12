@@ -21,6 +21,17 @@ function rh_user_rabbit_hole() {
 }
 
 /**
+ * Implements hook_config_info().
+ */
+function rh_user_config_info() {
+  $prefixes['rh_user.settings'] = array(
+    'label' => t('User settings'),
+    'group' => t('Rabbit Hole settings'),
+  );
+  return $prefixes;
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * This will add Rabbit Hole options to the account settings form. These
@@ -42,16 +53,12 @@ function rh_user_bundle_form_submit($form, $form_state) {
   $values = $form_state['values'];
 
   // Set the values of the variables.
-  config_set('rh_user.settings', 'rh_user_override_user', $values['rh_user_override']);
-  config_set('rh_user.settings', 'rh_user_action_user', $values['rh_user_action']);
-  config_set('rh_user.settings', 'rh_user_redirect_user', $values['rh_user_redirect']);
-  config_set('rh_user.settings', 'rh_user_redirect_response_user', $values['rh_user_redirect_response']);
-
-  // Delete the ones that are automatically saved by Backdrop.
-  config_clear('rh_user.settings', 'rh_user_override');
-  config_clear('rh_user.settings', 'rh_user_action');
-  config_clear('rh_user.settings', 'rh_user_redirect');
-  config_clear('rh_user.settings', 'rh_user_redirect_response');
+  $config = config('rh_user.settings');
+  $config->set('override_user', $values['rh_user_override']);
+  $config->set('action_user', $values['rh_user_action']);
+  $config->set('redirect_user', $values['rh_user_redirect']);
+  $config->set('redirect_response_user', $values['rh_user_redirect_response']);
+  $config->save();
 }
 
 /**
