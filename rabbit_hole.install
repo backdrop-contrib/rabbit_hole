@@ -6,31 +6,14 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function rabbit_hole_install() {
+}
+
+/**
  * Implements hook_update_last_removed().
  */
 function rabbit_hole_update_last_removed() {
   return 7003;
-}
-
-/**
- * Implements hook_update_N().
- */
-function rabbit_hole_update_1000() {
-  $config = config('rabbit_hole.settings');
-  $config->set('rabbit_hole_action_node_type', update_variable_get('rabbit_hole_action_node_type', 'dynamic variable in file /rabbit_hole/rabbit_hole.install line 71'));
-  $config->set('rabbit_hole_redirect_node_type', update_variable_get('rabbit_hole_redirect_node_type', 'dynamic variable in file /rabbit_hole/rabbit_hole.install line 77'));
-  $config->set('rabbit_hole_redirect_response_node_type', update_variable_get('rabbit_hole_redirect_response_node_type', 'dynamic variable in file /rabbit_hole/rabbit_hole.install line 83'));
-  update_variable_del('rabbit_hole_action_node_type');
-  update_variable_del('rabbit_hole_redirect_node_type');
-  update_variable_del('rabbit_hole_redirect_response_node_type');
-}
-
-/**
- * Implements hook_install().
- */
-function rabbit_hole_install() {
-  // Dynamically generated variable data was detected.
-  // /rabbit_hole/rabbit_hole.install line 71
-  // /rabbit_hole/rabbit_hole.install line 77
-  // /rabbit_hole/rabbit_hole.install line 83
 }

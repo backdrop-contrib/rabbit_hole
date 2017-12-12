@@ -21,6 +21,17 @@ function rh_node_rabbit_hole() {
 }
 
 /**
+ * Implements hook_config_info().
+ */
+function rh_node_config_info() {
+  $prefixes['rh_node.settings'] = array(
+    'label' => t('Node settings'),
+    'group' => t('Rabbit Hole settings'),
+  );
+  return $prefixes;
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * This will add Rabbit Hole options to the node type form. These settings will
@@ -33,6 +44,20 @@ function rh_node_form_node_type_form_alter(&$form, $form_state) {
   if (isset($form['rabbit_hole'])) {
     $form['rabbit_hole']['#attached']['js'][] = backdrop_get_path('module', 'rh_node') . '/rh-node.js';
   }
+  $form['#submit'][] = 'rh_node_type_form_submit';
+}
+
+/**
+ * Submit handler for node type form.
+ */
+function rh_node_type_form_submit($form, &$form_state) {
+  $config = config('rh_node.settings');
+  $config->set('override_' . $form_state['values']['type'], $form_state['values']['rh_node_override']);
+  $config->set('action_' . $form_state['values']['type'], $form_state['values']['rh_node_action']);
+  $config->set('redirect_' . $form_state['values']['type'], $form_state['values']['rh_node_redirect']);
+  $config->set('redirect_response_' . $form_state['values']['type'], $form_state['values']['rh_node_redirect_response']);
+  $config->save();
+
 }
 
 /**
@@ -89,23 +114,6 @@ function rh_node_node_view($node, $view_mode, $langcode) {
   // full view mode, and the current user isn't able to override Rabbit Hole.
   if ($view_mode == 'full' && node_is_page($node) && !user_access('bypass rh_node')) {
     rabbit_hole_execute('node', $node);
-  }
-}
-
-/**
- * Implements hook_ctools_render_alter().
- *
- * This is done since hook_node_view never gets called if the node is rendered
- * by Ctools.
- */
-function rh_node_ctools_render_alter($info, $page, $context) {
-  if ($page) {
-    if (isset($context['handler']) && !empty($context['handler']->conf['context']) && $context['handler']->task === 'node_view') {
-      $node = $context['contexts'][$context['handler']->conf['context']]->data;
-      if (!user_access('bypass rh_node')) {
-        rabbit_hole_execute('node', $node);
-      }
-    }
   }
 }
 

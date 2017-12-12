@@ -214,15 +214,13 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#attributes' => array('class' => array('rabbit-hole-redirect-setting')),
     '#rows' => substr_count($redirect_default_value, "\r\n") + 2,
   );
-  // Display a list of tokens if the Token module is enabled.
-  if (module_exists('token')) {
-    $entity_info = entity_get_info($entity_type);
-    $form['rabbit_hole']['redirect']['token_info'] = array(
-      '#theme' => 'token_tree',
-      '#token_types' => array($entity_info['token type']),
-      '#dialog' => TRUE,
-    );
-  }
+  // Display a list of tokens.
+  $entity_info = entity_get_info($entity_type);
+  $form['rabbit_hole']['redirect']['token_info'] = array(
+    '#theme' => 'token_tree_link',
+    '#token_types' => array($entity_info['token type']),
+    '#dialog' => TRUE,
+  );
 
   // Add the redirect respons setting.
   $redirect_response_setting_name = isset($entity) ? 'rh_redirect_response' : 'rh_' . $entity_type . '_redirect_response';
@@ -499,8 +497,12 @@ function rabbit_hole_get_action($entity_type, $entity) {
  *   The Rabbit Hole action set for the bundle.
  */
 function rabbit_hole_get_action_bundle($entity_type, $bundle) {
-  // TODO This variable was probably removed in Backdrop without replacement.
-  return variable_get('rh_' . $entity_type . '_action_' . $bundle, RABBIT_HOLE_DISPLAY_CONTENT);
+  $config = config('rh_' . $entity_type . '.settings');
+  $action = $config->get('action_' . $bundle);
+  if ($action === NULL) {
+    $action = RABBIT_HOLE_DISPLAY_CONTENT;
+  }
+  return $action;
 }
 
 /**
@@ -515,8 +517,12 @@ function rabbit_hole_get_action_bundle($entity_type, $bundle) {
  *   The redirect path set for the bundle.
  */
 function rabbit_hole_get_redirect_bundle($entity_type, $bundle) {
-  // TODO This variable was probably removed in Backdrop without replacement.
-  return variable_get('rh_' . $entity_type . '_redirect_' . $bundle, RABBIT_HOLE_PAGE_REDIRECT_DEFAULT);
+  $config = config('rh_' . $entity_type . '.settings');
+  $redirect = $config->get('redirect_' . $bundle);
+  if ($redirect === NULL) {
+    $redirect = RABBIT_HOLE_PAGE_REDIRECT_DEFAULT;
+  }
+  return $redirect;
 }
 
 /**
@@ -531,8 +537,12 @@ function rabbit_hole_get_redirect_bundle($entity_type, $bundle) {
  *   The redirect response set for the bundle.
  */
 function rabbit_hole_get_redirect_response_bundle($entity_type, $bundle) {
-  // TODO This variable was probably removed in Backdrop without replacement.
-  return variable_get('rh_' . $entity_type . '_redirect_response_' . $bundle, RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT);
+  $config = config('rh_' . $entity_type . '.settings');
+  $redirect_response = $config->get('redirect_response_' . $bundle);
+  if ($redirect_response === NULL) {
+    $redirect_response = RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT;
+  }
+  return $redirect_response;
 }
 
 /**
@@ -548,8 +558,12 @@ function rabbit_hole_get_redirect_response_bundle($entity_type, $bundle) {
  *   overridden for individual entities.
  */
 function rabbit_hole_get_override_bundle($entity_type, $bundle) {
-  // TODO This variable was probably removed in Backdrop without replacement.
-  return variable_get('rh_' . $entity_type . '_override_' . $bundle, FALSE);
+  $config = config('rh_' . $entity_type . '.settings');
+  $override = $config->get('override_' . $bundle);
+  if ($override === NULL) {
+    $override = FALSE;
+  }
+  return $override;
 }
 
 /**
@@ -603,12 +617,12 @@ function rabbit_hole_get_redirect_response_entity($entity_type, $entity) {
  * This should be executed when a module in uninstalled or a bundle is deleted.
  */
 function rabbit_hole_delete_variables($entity_type, $bundle) {
-  // TODO This variable was probably removed in Backdrop without replacement.
-  variable_del('rh_' . $entity_type . '_action_' . $bundle);
-  // TODO This variable was probably removed in Backdrop without replacement.
-  variable_del('rh_' . $entity_type . '_redirect_' . $bundle);
-  // TODO This variable was probably removed in Backdrop without replacement.
-  variable_del('rh_' . $entity_type . '_redirect_response_' . $bundle);
+  $config = config('rh_' . $entity_type . '.settings');
+  $config->clear('action_' . $bundle);
+  $config->clear('redirect_' . $bundle);
+  $config->clear('redirect_response_' . $bundle);
+  $config->clear('override_' . $bundle);
+  $config->save();
 }
 
 /**

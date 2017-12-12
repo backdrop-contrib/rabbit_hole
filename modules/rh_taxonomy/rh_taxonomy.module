@@ -21,6 +21,17 @@ function rh_taxonomy_rabbit_hole() {
 }
 
 /**
+ * Implements hook_config_info().
+ */
+function rh_taxonomy_config_info() {
+  $prefixes['rh_taxonomy_term.settings'] = array(
+    'label' => t('Taxonomy settings'),
+    'group' => t('Rabbit Hole settings'),
+  );
+  return $prefixes;
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * This will add Rabbit Hole options to the vocabulary form. These settings will
@@ -40,23 +51,13 @@ function rh_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
 }
 
 /**
- * Implements hook_config_info().
- */
-function rh_taxonomy_config_info() {
-  $prefixes['rh_taxonomy.settings'] = array(
-    'label' => t('Module name settings'),
-    'group' => t('Configuration'),
-  );
-}
-
-/**
  * Submit callback for the bundle form.
  *
  * This will set the value of the variables, and update the name of the
  * variables if the machine name of the vocabulary has changed.
  */
 function rh_taxonomy_bundle_form_submit($form, $form_state) {
-  $config = config('rh_taxonomy.settings');
+  $config = config('rh_taxonomy_term.settings');
   $values = $form_state['values'];
 
   // Set the values of the variables. This will be set to the provided values,
@@ -64,10 +65,11 @@ function rh_taxonomy_bundle_form_submit($form, $form_state) {
   // the administer rh_taxonomy permission. In this case, we'll set the
   // variables according to the stored values for the old machine name. We'll
   // use the old machine name in case it has changed.
-  config_set('rh_taxonomy.settings', 'rh_taxonomy_term_override_' . $values['machine_name'], isset($values['rh_taxonomy_term_override']) ? $values['rh_taxonomy_term_override'] : $config->get('rh_taxonomy_term_override_' . $values['old_machine_name']));
-  config_set('rh_taxonomy.settings', 'rh_taxonomy_term_action_' . $values['machine_name'], isset($values['rh_taxonomy_term_action']) ? $values['rh_taxonomy_term_action'] : $config->get('rh_taxonomy_term_action_' . $values['old_machine_name']));
-  config_set('rh_taxonomy.settings', 'rh_taxonomy_term_redirect_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect']) ? $values['rh_taxonomy_term_redirect'] : $config->get('rh_taxonomy_term_redirect_' . $values['old_machine_name']));
-  config_set('rh_taxonomy.settings', 'rh_taxonomy_term_redirect_response_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect_response']) ? $values['rh_taxonomy_term_redirect_response'] : $config->get('rh_taxonomy_term_redirect_response_' . $values['old_machine_name']));
+  $config->set('override_' . $values['machine_name'], isset($values['rh_taxonomy_term_override']) ? $values['rh_taxonomy_term_override'] : $config->get('override_' . $values['old_machine_name']));
+  $config->set('action_' . $values['machine_name'], isset($values['rh_taxonomy_term_action']) ? $values['rh_taxonomy_term_action'] : $config->get('action_' . $values['old_machine_name']));
+  $config->set('redirect_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect']) ? $values['rh_taxonomy_term_redirect'] : $config->get('redirect_' . $values['old_machine_name']));
+  $config->set('redirect_response_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect_response']) ? $values['rh_taxonomy_term_redirect_response'] : $config->get('redirect_response_' . $values['old_machine_name']));
+  $config->save();
 
   // Delete old variables if the machine name has changed.
   if (isset($values['old_machine_name']) && $values['machine_name'] != $values['old_machine_name']) {
