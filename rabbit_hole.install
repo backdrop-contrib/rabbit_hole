@@ -5,20 +5,11 @@
  * Install, update and uninstall functions for Rabbit Hole.
  */
 
-// TODO The old hook_update_N functions cannot be applied to Backdrop.
-function rabbit_hole_update_7001() { }
-
-// TODO The old hook_update_N functions cannot be applied to Backdrop.
-function rabbit_hole_update_7002() { }
-
-// TODO The old hook_update_N functions cannot be applied to Backdrop.
-function rabbit_hole_update_7003() { }
-
 /**
  * Implements hook_update_last_removed().
  */
 function rabbit_hole_update_last_removed() {
-  return;
+  return 7003;
 }
 
 /**

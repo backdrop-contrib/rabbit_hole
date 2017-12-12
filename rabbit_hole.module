@@ -238,7 +238,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
       307 => t('307 (Temporary redirect)'),
     ),
     '#default_value' => isset($entity) ? rabbit_hole_get_redirect_response_entity($entity_type, $entity) : (!empty($bundle) ? rabbit_hole_get_redirect_response_bundle($entity_type, $bundle) : RABBIT_HOLE_PAGE_REDIRECT_RESPONSE_DEFAULT),
-    '#description' => t('The response code that should be sent to the users browser. Follow !link for more information on response codes.', array('!link' => l(t('this link'), 'http://api.drupal.org/api/backdrop/includes--common.inc/function/backdrop_goto/7'))),
+    '#description' => t('The response code that should be sent to the users browser. Follow !link for more information on response codes.', array('!link' => l(t('this link'), 'https://api.backdropcms.org/api/backdrop/core%21includes%21common.inc/function/backdrop_goto/1'))),
     '#attributes' => array('class' => array('rabbit-hole-redirect-response-setting')),
   );
 
