@@ -2,5 +2,8 @@ name = Rabbit Hole files
 description = Adds Rabbit Hole functionality for files.
 backdrop = 1.x
 type = module
+hidden = TRUE
+package = Rabbit Hole
+
 dependencies[] = rabbit_hole
 dependencies[] = file_entity

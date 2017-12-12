@@ -2,5 +2,8 @@ name = Rabbit Hole Profile2
 description = Adds Rabbit Hole functionality for profile2.
 backdrop = 1.x
 type = module
+hidden = TRUE
+package = Rabbit Hole
+
 dependencies[] = rabbit_hole
 dependencies[] = profile2_page

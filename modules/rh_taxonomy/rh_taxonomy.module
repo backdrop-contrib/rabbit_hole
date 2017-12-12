@@ -34,6 +34,9 @@ function rh_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
 
   // Add the Rabbit Hole form.
   rabbit_hole_form($form, 'taxonomy_term', $form['#vocabulary']->machine_name, 'rh_taxonomy');
+  if (isset($form['rabbit_hole'])) {
+    $form['rabbit_hole']['#attached']['js'][] = backdrop_get_path('module', 'rh_taxonomy') . '/rh-taxonomy.js';
+  }
 }
 
 /**
@@ -67,7 +70,7 @@ function rh_taxonomy_bundle_form_submit($form, $form_state) {
   config_set('rh_taxonomy.settings', 'rh_taxonomy_term_redirect_response_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect_response']) ? $values['rh_taxonomy_term_redirect_response'] : $config->get('rh_taxonomy_term_redirect_response_' . $values['old_machine_name']));
 
   // Delete old variables if the machine name has changed.
-  if ($values['machine_name'] != $values['old_machine_name']) {
+  if (isset($values['old_machine_name']) && $values['machine_name'] != $values['old_machine_name']) {
     rabbit_hole_delete_variables('taxonomy_term', $values['old_machine_name']);
   }
 }

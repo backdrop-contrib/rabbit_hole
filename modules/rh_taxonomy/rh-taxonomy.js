@@ -1,6 +1,6 @@
 (function($) {
 
-Backdrop.behaviors.rhNode = {
+Backdrop.behaviors.rhTaxonomy = {
   attach: function (context, settings) {
 
     // Set the summary for the settings form.
