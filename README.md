@@ -27,7 +27,7 @@ Current Maintainers
 Credits
 -------
 
-- Ported to Backdrop by [Laryn Kragt Bakker](https://github.com/laryn/), [CEDC.org](https://CEDC.org)
+- Ported to Backdrop by [Herb v/d Dool](https://github.com/herbdool) and [Laryn Kragt Bakker](https://github.com/laryn/), [CEDC.org](https://CEDC.org)
 - Maintained for Drupal by [shumushin](https://www.drupal.org/u/shumushin), [olofjohansson](https://www.drupal.org/u/olofjohansson), and [Dylan Donkersgoed](https://www.drupal.org/u/dylan-donkersgoed)
 - Support for Drupal by [Odd Hill](http://www.oddhill.se/)
 
