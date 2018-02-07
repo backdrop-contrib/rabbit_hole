@@ -299,14 +299,16 @@ function rabbit_hole_execute($entity_type, $entity) {
 
   switch (rabbit_hole_get_action($entity_type, $entity)) {
     case RABBIT_HOLE_ACCESS_DENIED:
-      // Deliver a 403 and return.
+      // Deliver a 403 and exit.
+      backdrop_set_title(t('Access Denied'));
       backdrop_access_denied();
-      return;
+      backdrop_exit();
 
     case RABBIT_HOLE_PAGE_NOT_FOUND:
-      // Deliver a 404 and return.
+      // Deliver a 404 and exit.
+      backdrop_set_title(t('Page Not Found'));
       backdrop_not_found();
-      return;
+      backdrop_exit();
 
     case RABBIT_HOLE_PAGE_REDIRECT:
       // Determine the source of the redirect. This will be the entity itself,
