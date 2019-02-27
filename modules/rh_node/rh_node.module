@@ -130,10 +130,10 @@ function rh_node_node_type_delete($type) {
  */
 function colorbox_node_rabbit_hole_execute_alter(&$action, $context) {
   if ($context['entity_type'] === 'node') {
-    // Version 7.x-3.x
+    // Version 1.x-3.x
     $access = function_exists('colorbox_node_is_active') && colorbox_node_is_active();
-    // Version 7.x-3.5 and below.
-    $path = drupal_static('colorbox_original_q');
+    // Version 1.x-3.5 and below.
+    $path = backdrop_static('colorbox_original_q');
     $access = $access || ($path && arg(0, $path) === 'colorbox');
 
     if ($access) {

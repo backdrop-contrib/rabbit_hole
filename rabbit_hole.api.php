@@ -51,7 +51,7 @@
 function hook_rabbit_hole_execute_alter(&$action, $context) {
   if ($context['entity_type'] === 'user' && isset($_GET['token'])) {
     $user = $context['entity'];
-    if (drupal_valid_token($_GET['token'], "override_rh:user:$user->uid")) {
+    if (backdrop_valid_token($_GET['token'], "override_rh:user:$user->uid")) {
       $action = FALSE;
     }
   }
