@@ -213,6 +213,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#description' => '<p>' . implode('</p><p>', $description) . '</p>',
     '#attributes' => array('class' => array('rabbit-hole-redirect-setting')),
     '#rows' => substr_count($redirect_default_value, "\r\n") + 2,
+    '#maxlength' => 2000,
   );
   // Display a list of tokens if the Token module is enabled.
   if (module_exists('token')) {
