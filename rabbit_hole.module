@@ -681,7 +681,7 @@ function rabbit_hole_modules_uninstalled($modules) {
     // Hole fields from the base table of the entity type that this module is
     // altering. We need to include the .module file manually, since the module
     // hsa been uninstalled and therefore, isn't reachable the normal way.
-    require_once DRUPAL_ROOT . '/' . drupal_get_path('module', $module) . '/' . $module . '.module';
+    module_load_include('module', $module);
     $function = $module . '_rabbit_hole';
     if (function_exists($function)) {
       // Gather info about the module, entity and get the Rabbit Hole fields.
