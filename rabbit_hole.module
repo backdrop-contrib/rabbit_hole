@@ -433,7 +433,7 @@ function rabbit_hole_access_php($module) {
 function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   $primary = &$data['tabs'][0];
 
-  if (!is_array($primary['output'])) {
+  if (empty($primary['output']) || !is_array($primary['output'])) {
     // There are no tabs present, exit early.
     return;
   }
