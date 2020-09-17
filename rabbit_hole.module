@@ -310,6 +310,7 @@ function rabbit_hole_execute($entity_type, $entity) {
 
     case RABBIT_HOLE_PAGE_NOT_FOUND:
       // Deliver a 404, and exit.
+      drupal_set_title(t('Page not found'));
       drupal_not_found();
       drupal_exit();
 
