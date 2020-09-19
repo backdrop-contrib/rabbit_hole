@@ -95,3 +95,17 @@ function rh_taxonomy_taxonomy_vocabulary_delete($vocabulary) {
   // Delete variables connected to this vocabulary.
   rabbit_hole_delete_variables('taxonomy_term', $vocabulary->machine_name);
 }
+
+/**
+ * Implements hook_features_pipe_COMPONENT_alter().
+ */
+function rh_taxonomy_features_pipe_taxonomy_alter(&$pipe, $data, $export) {
+  if (!empty($data)) {
+    foreach ($data as $vocabulary_name) {
+      $pipe['variable'][] = 'rh_taxonomy_term_override_' . $vocabulary_name;
+      $pipe['variable'][] = 'rh_taxonomy_term_action_' . $vocabulary_name;
+      $pipe['variable'][] = 'rh_taxonomy_term_redirect_' . $vocabulary_name;
+      $pipe['variable'][] = 'rh_taxonomy_term_redirect_response_' . $vocabulary_name;
+    }
+  }
+}
