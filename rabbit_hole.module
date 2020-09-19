@@ -616,12 +616,12 @@ function rabbit_hole_delete_variables($entity_type, $bundle) {
  *   A list of Rabbit Hole variable names.
  */
 function rabbit_hole_get_variables($entity_type, $bundle) {
-  return [
+  return array(
     'rh_' . $entity_type . '_override_' . $bundle,
     'rh_' . $entity_type . '_action_' . $bundle,
     'rh_' . $entity_type . '_redirect_' . $bundle,
     'rh_' . $entity_type . '_redirect_response_' . $bundle,
-  ];
+  );
 }
 
 /**
