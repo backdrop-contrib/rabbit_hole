@@ -604,9 +604,24 @@ function rabbit_hole_get_redirect_response_entity($entity_type, $entity) {
  * This should be executed when a module in uninstalled or a bundle is deleted.
  */
 function rabbit_hole_delete_variables($entity_type, $bundle) {
-  variable_del('rh_' . $entity_type . '_action_' . $bundle);
-  variable_del('rh_' . $entity_type . '_redirect_' . $bundle);
-  variable_del('rh_' . $entity_type . '_redirect_response_' . $bundle);
+  foreach (rabbit_hole_get_variables($entity_type, $bundle) as $rh_variable) {
+    variable_del($rh_variable);
+  }
+}
+
+/**
+ * Returns array of available Rabbit Hole variables for given entity bundle.
+ *
+ * @return array
+ *   A list of Rabbit Hole variable names.
+ */
+function rabbit_hole_get_variables($entity_type, $bundle) {
+  return [
+    'rh_' . $entity_type . '_override_' . $bundle,
+    'rh_' . $entity_type . '_action_' . $bundle,
+    'rh_' . $entity_type . '_redirect_' . $bundle,
+    'rh_' . $entity_type . '_redirect_response_' . $bundle,
+  ];
 }
 
 /**
