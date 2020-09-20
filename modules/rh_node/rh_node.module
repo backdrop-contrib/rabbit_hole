@@ -36,6 +36,19 @@ function rh_node_form_node_type_form_alter(&$form, $form_state) {
 }
 
 /**
+ * Submit callback for the bundle form.
+ *
+ * This will clean the garbage variables saved by node_type_form_submit().
+ */
+function rh_node_bundle_form_submit($form, $form_state) {
+  if (!empty($form_state['values']['type'])) {
+    $type = $form_state['values']['type'];
+    variable_del('rh_module_' . $type);
+    variable_del('redirect_setting_name_' . $type);
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * This will add Rabbit Hole options to the node form. The user will be able to
