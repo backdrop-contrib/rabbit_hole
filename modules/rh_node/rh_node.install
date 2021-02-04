@@ -6,18 +6,19 @@
  */
 
 /**
+ * Delete Rabbit Hole garbage variables potentially left over after upgrade.
+ */
+function rh_node_update_1200() {
+  $node_types = node_type_get_names();
+  foreach ($node_types as $type => $name) {
+    update_variable_del('rh_module_' . $type);
+    update_variable_del('redirect_setting_name_' . $type);
+  }
+}
+
+/**
  * Implements hook_update_last_removed().
  */
 function rh_node_update_last_removed() {
   return 7001;
-}
-
-/**
- * Delete Rabbit Hole garbage variables potentially left over after upgrade.
- */
-function rh_node_update_1000() {
-  foreach (node_type_get_names() as $type) {
-    variable_del('rh_module_' . $type);
-    variable_del('redirect_setting_name_' . $type);
-  }
 }
