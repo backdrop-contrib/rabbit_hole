@@ -6,12 +6,6 @@
  */
 
 /**
- * Implements hook_install().
- */
-function rabbit_hole_install() {
-}
-
-/**
  * Implements hook_update_last_removed().
  */
 function rabbit_hole_update_last_removed() {
