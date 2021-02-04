@@ -115,8 +115,8 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   $entity_label = strtolower(isset($entity_info['plural label']) ? $entity_info['plural label'] : $entity_info['label']);
 
   // Get the label for the bundle. This won't be set when the user is creating a
-  // new bundle. In that case, fallback to "this bundle".
-  $bundle_label = isset($entity_info['bundles'][$bundle]['label']) ? $entity_info['bundles'][$bundle]['label'] : 'this bundle';
+  // new bundle. In that case, fallback to an empty value.
+  $bundle_label = isset($entity_info['bundles'][$bundle]['label']) ? $entity_info['bundles'][$bundle]['label'] : '';
 
   // Wrap everything in a fieldset.
   $form['rabbit_hole'] = array(
@@ -138,9 +138,9 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   if (!isset($entity)) {
     $form['rabbit_hole']['rh_' . $entity_type . '_override'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Allow these settings to be overridden for individual entities'),
+      '#title' => t('Allow these settings to be overridden for individual %bundle items', array('%bundle' => $bundle_label)),
       '#default_value' => rabbit_hole_get_override_bundle($entity_type, $bundle),
-      '#description' => t('If this is checked, users with the %permission permission will be able to override these settings for individual entities.', array('%permission' => t('Administer Rabbit Hole settings for @entity_type', array('@entity_type' => $entity_label)))),
+      '#description' => t('Users will need the %permission permission to override these settings.', array('%permission' => t('Administer Rabbit Hole settings for @entity_type', array('@entity_type' => $entity_label)))),
     );
   }
 
@@ -151,14 +151,6 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     RABBIT_HOLE_PAGE_NOT_FOUND => t('Page not found'),
     RABBIT_HOLE_PAGE_REDIRECT => t('Page redirect'),
   );
-  if (isset($entity)) {
-    // Add an option if we are editing an entity. This will allow us to use the
-    // configuration for the bundle.
-    $action_bundle = rabbit_hole_get_action_bundle($entity_type, $bundle);
-    $action_options = array(
-      RABBIT_HOLE_USE_DEFAULT => t('Global @bundle behavior (@setting)', array('@bundle' => strtolower($bundle_label), '@setting' => $action_options[$action_bundle])),
-    ) + $action_options;
-  }
 
   // Add action setting.
   $action_setting_name = isset($entity) ? 'rh_action' : 'rh_' . $entity_type . '_action';
@@ -167,10 +159,18 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#title' => t('Behavior'),
     '#options' => $action_options,
     '#default_value' => isset($entity) ? rabbit_hole_get_action_entity($entity_type, $entity) : (!empty($bundle) ? rabbit_hole_get_action_bundle($entity_type, $bundle) : RABBIT_HOLE_DISPLAY_CONTENT),
-    '#description' => t('What should happen when someone tries to visit an entity page for @bundle?', array('@bundle' => strtolower(isset($entity_info['plural label']) ? $entity_info['plural label'] : $bundle_label))),
+    '#description' => t('What should happen when someone tries to visit a %bundle page?', array('%bundle' => $bundle_label)),
     '#attributes' => array('class' => array('rabbit-hole-action-setting')),
   );
-
+  // Adjustments for editing an individual entity
+  if (isset($entity)) {
+    // Add an option to allow us to use the configuration for the bundle.
+    $action_bundle = rabbit_hole_get_action_bundle($entity_type, $bundle);
+    $form['rabbit_hole'][$action_setting_name]['#options'] = array(
+      RABBIT_HOLE_USE_DEFAULT => t('Default %bundle behavior (@setting)', array('%bundle' => $bundle_label, '@setting' => $action_options[$action_bundle])),
+      ) + $form['rabbit_hole'][$action_setting_name]['#options'];
+    $form['rabbit_hole'][$action_setting_name]['#description'] = t('What should happen when someone tries to visit this page?');
+  }
   // Wrap the redirect settings in a fieldset.
   $form['rabbit_hole']['redirect'] = array(
     '#type' => 'fieldset',
@@ -189,7 +189,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
   // Build the descriptive text. Add some help text for PHP, if the user has the
   // permission to use PHP for evaluation.
   $description = array();
-  $description[] = t('Enter the relative path or the full URL that the user should get redirected to. Query strings and fragments are supported, such as %example.', array('%example' => 'http://www.example.com/?query=value#fragment'));
+  $description[] = t('Enter the relative path or the full URL that the user should get redirected to. Query strings and fragments are supported, such as %example.', array('%example' => 'https://www.example.com/?query=value#fragment'));
   if (rabbit_hole_access_php($module)) {
     $placeholders = array(
       '!surround' => '<code>&lt;?php</code> and <code>?&gt;</code>',
@@ -213,6 +213,7 @@ function rabbit_hole_form(&$attach, $entity_type, $bundle, $module, $entity = NU
     '#description' => '<p>' . implode('</p><p>', $description) . '</p>',
     '#attributes' => array('class' => array('rabbit-hole-redirect-setting')),
     '#rows' => substr_count($redirect_default_value, "\r\n") + 2,
+    '#maxlength' => 2000,
   );
   // Display a list of tokens.
   $entity_info = entity_get_info($entity_type);
@@ -292,6 +293,7 @@ function rabbit_hole_form_validate($form, &$form_state) {
  *   something is done, this function will redirect the user immediately.
  */
 function rabbit_hole_execute($entity_type, $entity) {
+  global $language;
   $action = rabbit_hole_get_action($entity_type, $entity);
   $context = array(
     'entity_type' => $entity_type,
@@ -303,14 +305,14 @@ function rabbit_hole_execute($entity_type, $entity) {
     case RABBIT_HOLE_ACCESS_DENIED:
       // Deliver a 403 and exit.
       // Todo: Remove backdrop_set_title when core issue is solved: https://github.com/backdrop/backdrop-issues/issues/2918
-      backdrop_set_title(t('Access Denied'));
+      backdrop_set_title(t('Access denied'));
       backdrop_access_denied();
       backdrop_exit();
 
     case RABBIT_HOLE_PAGE_NOT_FOUND:
       // Deliver a 404 and exit.
       // Todo: Remove backdrop_set_title when core issue is solved: https://github.com/backdrop/backdrop-issues/issues/2918
-      backdrop_set_title(t('Page Not Found'));
+      backdrop_set_title(t('Page not found'));
       backdrop_not_found();
       backdrop_exit();
 
@@ -356,7 +358,7 @@ function rabbit_hole_execute($entity_type, $entity) {
       // Replace any tokens with real values.
       $entity_info = entity_get_info($entity_type);
       $token_data = isset($entity_info['token type']) ? array($entity_info['token type'] => $entity) : array();
-      $redirect = token_replace($redirect, $token_data, array('clear' => TRUE));
+      $redirect = token_replace($redirect, $token_data, array('language' => $language, 'clear' => TRUE));
 
       // Parse the supplied redirect path in order to get the details.
       $redirect_data = backdrop_parse_url($redirect);
@@ -435,7 +437,7 @@ function rabbit_hole_access_php($module) {
 function rabbit_hole_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   $primary = &$data['tabs'][0];
 
-  if (!is_array($primary['output'])) {
+  if (empty($primary['output']) || !is_array($primary['output'])) {
     // There are no tabs present, exit early.
     return;
   }
@@ -625,10 +627,25 @@ function rabbit_hole_get_redirect_response_entity($entity_type, $entity) {
 function rabbit_hole_delete_variables($entity_type, $bundle) {
   $config = config('rh_' . $entity_type . '.settings');
   $config->clear('action_' . $bundle);
+  $config->clear('override_' . $bundle);
   $config->clear('redirect_' . $bundle);
   $config->clear('redirect_response_' . $bundle);
-  $config->clear('override_' . $bundle);
   $config->save();
+}
+
+/**
+ * Returns array of available Rabbit Hole variables for given entity bundle.
+ *
+ * @return array
+ *   A list of Rabbit Hole variable names.
+ */
+function rabbit_hole_get_variables($entity_type, $bundle) {
+  return array(
+    'rh_' . $entity_type . '_action_' . $bundle,
+    'rh_' . $entity_type . '_override_' . $bundle,
+    'rh_' . $entity_type . '_redirect_' . $bundle,
+    'rh_' . $entity_type . '_redirect_response_' . $bundle,
+  );
 }
 
 /**
@@ -704,7 +721,7 @@ function rabbit_hole_modules_uninstalled($modules) {
     // Hole fields from the base table of the entity type that this module is
     // altering. We need to include the .module file manually, since the module
     // hsa been uninstalled and therefore, isn't reachable the normal way.
-    require_once BACKDROP_ROOT . '/' . backdrop_get_path('module', $module) . '/' . $module . '.module';
+    module_load_include('module', $module);
     $function = $module . '_rabbit_hole';
     if (function_exists($function)) {
       // Gather info about the module, entity and get the Rabbit Hole fields.
