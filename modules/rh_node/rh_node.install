@@ -6,6 +6,19 @@
  */
 
 /**
+ * Implements hook_requirements().
+ */
+function rh_node_requirements($phase) {
+  $t = get_t();
+  $requirements = array();
+
+  // Make sure schema version is appropriate.
+  if (backdrop_get_installed_schema_version('rh_node') == 0) {
+    backdrop_set_installed_schema_version('rh_node', 999);
+  }
+}
+
+/**
  * Delete Rabbit Hole garbage variables potentially left over after upgrade.
  */
 function rh_node_update_1200() {
