@@ -133,6 +133,6 @@ function rh_file_file_view($file, $view_mode, $langcode) {
  * Implements hook_file_type_delete().
  */
 function rh_file_file_type_delete($file) {
-  // Delete variables connected to this file type.
-  rabbit_hole_delete_variables('file', $file->type);
+  // Clear config values connected to this file type.
+  rabbit_hole_clear_config_values('file', $file->type);
 }

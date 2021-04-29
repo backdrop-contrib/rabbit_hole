@@ -53,17 +53,17 @@ function rh_taxonomy_form_taxonomy_form_vocabulary_alter(&$form, $form_state) {
 /**
  * Submit callback for the bundle form.
  *
- * This will set the value of the variables, and update the name of the
- * variables if the machine name of the vocabulary has changed.
+ * This will set the values in the config file, and unset old values
+ * if the machine name of the vocabulary has changed.
  */
 function rh_taxonomy_bundle_form_submit($form, $form_state) {
   $config = config('rh_taxonomy_term.settings');
   $values = $form_state['values'];
 
-  // Set the values of the variables. This will be set to the provided values,
+  // Set the values in the config file. This will be set to the provided values,
   // if there are any provided values. They may be NULL if the user doesn't have
   // the administer rh_taxonomy permission. In this case, we'll set the
-  // variables according to the stored values for the old machine name. We'll
+  // values according to the stored values for the old machine name. We'll
   // use the old machine name in case it has changed.
   $config->set('override_' . $values['machine_name'], isset($values['rh_taxonomy_term_override']) ? $values['rh_taxonomy_term_override'] : $config->get('override_' . $values['old_machine_name']));
   $config->set('action_' . $values['machine_name'], isset($values['rh_taxonomy_term_action']) ? $values['rh_taxonomy_term_action'] : $config->get('action_' . $values['old_machine_name']));
@@ -71,9 +71,9 @@ function rh_taxonomy_bundle_form_submit($form, $form_state) {
   $config->set('redirect_response_' . $values['machine_name'], isset($values['rh_taxonomy_term_redirect_response']) ? $values['rh_taxonomy_term_redirect_response'] : $config->get('redirect_response_' . $values['old_machine_name']));
   $config->save();
 
-  // Delete old variables if the machine name has changed.
+  // Clear old config values if the machine name has changed.
   if (isset($values['old_machine_name']) && $values['machine_name'] != $values['old_machine_name']) {
-    rabbit_hole_delete_variables('taxonomy_term', $values['old_machine_name']);
+    rabbit_hole_clear_config_values('taxonomy_term', $values['old_machine_name']);
   }
 }
 
@@ -108,6 +108,6 @@ function rh_taxonomy_taxonomy_term_view($term, $view_mode, $langcode) {
  * Implements hook_taxonomy_vocabulary_delete().
  */
 function rh_taxonomy_taxonomy_vocabulary_delete($vocabulary) {
-  // Delete variables connected to this vocabulary.
-  rabbit_hole_delete_variables('taxonomy_term', $vocabulary->machine_name);
+  // Clear config values connected to this vocabulary.
+  rabbit_hole_clear_config_values('taxonomy_term', $vocabulary->machine_name);
 }

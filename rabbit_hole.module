@@ -620,11 +620,11 @@ function rabbit_hole_get_redirect_response_entity($entity_type, $entity) {
 }
 
 /**
- * Deletes variables associated with an entity type and bundle.
+ * Clears config values associated with an entity type and bundle.
  *
  * This should be executed when a module in uninstalled or a bundle is deleted.
  */
-function rabbit_hole_delete_variables($entity_type, $bundle) {
+function rabbit_hole_clear_config_values($entity_type, $bundle) {
   $config = config('rh_' . $entity_type . '.settings');
   $config->clear('action_' . $bundle);
   $config->clear('override_' . $bundle);
@@ -632,22 +632,6 @@ function rabbit_hole_delete_variables($entity_type, $bundle) {
   $config->clear('redirect_response_' . $bundle);
   $config->save();
 }
-
-/**
- * Returns array of available Rabbit Hole variables for given entity bundle.
- *
- * @return array
- *   A list of Rabbit Hole variable names.
- */
-function rabbit_hole_get_variables($entity_type, $bundle) {
-  return array(
-    'rh_' . $entity_type . '_action_' . $bundle,
-    'rh_' . $entity_type . '_override_' . $bundle,
-    'rh_' . $entity_type . '_redirect_' . $bundle,
-    'rh_' . $entity_type . '_redirect_response_' . $bundle,
-  );
-}
-
 /**
  * Gets the bundle of an entity.
  *
@@ -736,9 +720,9 @@ function rabbit_hole_modules_uninstalled($modules) {
         }
       }
 
-      // Delete any variables that is set the this entity.
+      // Clear any config values that are set for this entity.
       foreach ($entity_info['bundles'] as $bundle => $info) {
-        rabbit_hole_delete_variables($rabbit_hole_info[$module]['entity type'], $bundle);
+        rabbit_hole_clear_config_values($rabbit_hole_info[$module]['entity type'], $bundle);
       }
     }
   }
@@ -771,4 +755,12 @@ function rabbit_hole_schema_fields() {
   );
 
   return $fields;
+}
+
+/**
+ * Deprecated functions.
+ */
+function rabbit_hole_delete_variables($entity_type, $bundle) {
+  watchdog_deprecated_function('rabbit_hole', __FUNCTION__);
+  rabbit_hole_clear_config_values($entity_type, $bundle);
 }

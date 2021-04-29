@@ -132,6 +132,6 @@ function rh_bean_form_bean_admin_ui_type_op_confirm_alter(&$form, &$form_state, 
  * Custom submit handler for the bean type delete confirm form.
  */
 function rh_bean_bean_admin_ui_type_op_confirm_submit($form, &$form_state) {
-  // Delete variables connected to this bean type.
-  rabbit_hole_delete_variables('bean', $form_state['values']['type']->type);
+  // Clear config values connected to this bean type.
+  rabbit_hole_clear_config_values('bean', $form_state['values']['type']->type);
 }

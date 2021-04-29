@@ -77,7 +77,7 @@ function rh_field_collection_field_collection_item_view($field_collection_item, 
  */
 function rh_field_collection_field_delete_field($field) {
   if ($field['type'] == 'field_collection') {
-    // Delete variables connected to this field collection.
-    rabbit_hole_delete_variables('field_collection_item', $field['field_name']);
+    // Clear config values connected to this field collection.
+    rabbit_hole_clear_config_values('field_collection_item', $field['field_name']);
   }
 }

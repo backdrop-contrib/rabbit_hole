@@ -155,6 +155,6 @@ function rh_profile2_profile2_view($profile, $view_mode, $langcode) {
  * @param $profile_type
  */
 function rh_profile2_profile2_type_delete($profile_type) {
-  // Delete variables connected to this bundle.
-  rabbit_hole_delete_variables('profile2', $profile_type->type);
+  // Clear config values connected to this bundle.
+  rabbit_hole_clear_config_values('profile2', $profile_type->type);
 }

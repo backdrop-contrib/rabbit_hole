@@ -134,8 +134,8 @@ function rh_node_node_view($node, $view_mode, $langcode) {
  * Implements hook_node_type_delete().
  */
 function rh_node_node_type_delete($type) {
-  // Delete variables connected to this content type.
-  rabbit_hole_delete_variables('node', $type->type);
+  // Clear config values connected to this content type.
+  rabbit_hole_clear_config_values('node', $type->type);
 }
 
 /**
