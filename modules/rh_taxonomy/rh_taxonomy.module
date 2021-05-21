@@ -110,7 +110,7 @@ function rh_taxonomy_taxonomy_term_view($term, $view_mode, $langcode) {
 function rh_taxonomy_views_pre_build(&$view) {
   // Execute Rabbit Hole, if the term is being viewed using the "Taxonomy Term"
   // view, and the current user isn't able to override Rabbit Hole.
-  if ($view->name == 'taxonomy_term' && !user_access('bypass rh_taxonomy')) {
+  if ($view->name == 'taxonomy_term' && !user_access('bypass rh_taxonomy') && !empty($view->args[0])) {
     $tid = $view->args[0];
     $term = taxonomy_term_load($tid);
     rabbit_hole_execute('taxonomy_term', $term);
