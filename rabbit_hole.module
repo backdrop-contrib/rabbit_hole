@@ -281,7 +281,8 @@ function rabbit_hole_form_validate($form, &$form_state) {
  * Determines the action that should be executed.
  *
  * This will actually execute the action, and should be used when the entity
- * is being viewed.
+ * is being viewed. The super user (user id = 1) is special-cased here and a
+ * message is displayed rather than actually executing the Rabbit Hole.
  *
  * @param string $entity_type
  *   The entity type that's being viewed, e.g. 'node'.
@@ -294,6 +295,7 @@ function rabbit_hole_form_validate($form, &$form_state) {
  */
 function rabbit_hole_execute($entity_type, $entity) {
   global $language;
+  $is_superuser = $GLOBALS['user']->uid == 1;
   $action = rabbit_hole_get_action($entity_type, $entity);
   $context = array(
     'entity_type' => $entity_type,
@@ -303,18 +305,30 @@ function rabbit_hole_execute($entity_type, $entity) {
 
   switch ($action) {
     case RABBIT_HOLE_ACCESS_DENIED:
-      // Deliver a 403 and exit.
-      // Todo: Remove backdrop_set_title when core issue is solved: https://github.com/backdrop/backdrop-issues/issues/2918
-      backdrop_set_title(t('Access denied'));
-      backdrop_access_denied();
-      backdrop_exit();
+      if (!$is_superuser) {
+        // Deliver a 403 and exit.
+        // Todo: Remove backdrop_set_title when core issue is solved: https://github.com/backdrop/backdrop-issues/issues/2918
+        backdrop_set_title(t('Access denied'));
+        backdrop_access_denied();
+        backdrop_exit();
+      }
+      else {
+        backdrop_set_message(t('Skipping the Rabbit Hole "Access Denied" action for User 1.'), 'info');
+        break;
+      }
 
     case RABBIT_HOLE_PAGE_NOT_FOUND:
-      // Deliver a 404 and exit.
-      // Todo: Remove backdrop_set_title when core issue is solved: https://github.com/backdrop/backdrop-issues/issues/2918
-      backdrop_set_title(t('Page not found'));
-      backdrop_not_found();
-      backdrop_exit();
+      if (!$is_superuser) {
+        // Deliver a 404 and exit.
+        // Todo: Remove backdrop_set_title when core issue is solved: https://github.com/backdrop/backdrop-issues/issues/2918
+        backdrop_set_title(t('Page not found'));
+        backdrop_not_found();
+        backdrop_exit();
+      }
+      else {
+        backdrop_set_message(t('Skipping the Rabbit Hole "Page Not Found" action for User 1.'), 'info');
+        break;
+      }
 
     case RABBIT_HOLE_PAGE_REDIRECT:
       // Determine the source of the redirect. This will be the entity itself,
@@ -363,8 +377,15 @@ function rabbit_hole_execute($entity_type, $entity) {
       // Parse the supplied redirect path in order to get the details.
       $redirect_data = backdrop_parse_url($redirect);
 
-      // Perform the redirect.
-      backdrop_goto($redirect_data['path'], $redirect_data, $redirect_response);
+      if (!$is_superuser) {
+        // Perform the redirect.
+        backdrop_goto($redirect_data['path'], $redirect_data, $redirect_response);
+      }
+      else {
+        backdrop_set_message(t('Skipping the Rabbit Hole "<a href="@url">Redirect</a>" action for User 1.', array('@url' => url($redirect_data['path'], $redirect_data))), 'info');
+        break;
+      }
+
 
     default:
       // There's nothing to do.

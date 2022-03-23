@@ -99,8 +99,10 @@ function rh_taxonomy_form_taxonomy_form_term_alter(&$form, $form_state) {
 function rh_taxonomy_taxonomy_term_view($term, $view_mode, $langcode) {
   // Execute Rabbit Hole, if the term is being viewed at its own page using the
   // full view mode, and the current user isn't able to override Rabbit Hole.
-  if ($view_mode == 'full' && taxonomy_term_is_page($term) && !user_access('bypass rh_taxonomy')) {
-    rabbit_hole_execute('taxonomy_term', $term);
+  if ($view_mode == 'full' && taxonomy_term_is_page($term)) {
+    if (!user_access('bypass rh_taxonomy') || $GLOBALS['user']->uid == 1) {
+      rabbit_hole_execute('taxonomy_term', $term);
+    }
   }
 }
 
@@ -110,10 +112,12 @@ function rh_taxonomy_taxonomy_term_view($term, $view_mode, $langcode) {
 function rh_taxonomy_views_pre_build(&$view) {
   // Execute Rabbit Hole, if the term is being viewed using the "Taxonomy Term"
   // view, and the current user isn't able to override Rabbit Hole.
-  if ($view->name == 'taxonomy_term' && !user_access('bypass rh_taxonomy')) {
-    $tid = $view->args[0];
-    $term = taxonomy_term_load($tid);
-    rabbit_hole_execute('taxonomy_term', $term);
+  if ($view->name == 'taxonomy_term') {
+    if (!user_access('bypass rh_taxonomy') || $GLOBALS['user']->uid == 1) {
+      $tid = $view->args[0];
+      $term = taxonomy_term_load($tid);
+      rabbit_hole_execute('taxonomy_term', $term);
+    }
   }
 }
 
